@@ -1,0 +1,85 @@
+﻿@model IdentityText.Models.Subject
+
+@{
+    ViewData["Title"] = "Edit Subject";
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <!-- عنوان الصفحة -->
+        <div class="chart-header mb-4 rounded-3 shadow-sm d-flex justify-content-center align-items-center text-white">
+            <i class="bi bi-pencil-square me-2"></i> Edit Subject
+        </div>
+        <div class="form-container p-4 rounded-3 shadow-sm bg-white">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <input type="hidden" asp-for="SubjectId" />
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control rounded-pill" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label"></label>
+                    <input asp-for="Description" class="form-control rounded-pill" />
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="SubjectType" class="form-label"></label>
+                    <select asp-for="SubjectType" class="form-select rounded-pill" asp-items="ViewBag.SubjectTypeList">
+                        <option value="">-- اختر نوع المادة --</option>
+                    </select>
+                    <span asp-validation-for="SubjectType" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <button type="submit" class="btn btn-outline-primary px-4 rounded-pill shadow-sm">
+                        <i class="bi bi-check-circle me-2"></i> Save
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill">
+                        <i class="bi bi-arrow-left-circle me-1"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<style>
+    .chart-header {
+        background: linear-gradient(to bottom, #1d3557, #447a9c);
+        color: white;
+        padding: 12px 20px;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .form-container {
+        background-color: #ffffff;
+    }
+
+    .form-control,
+    .form-select {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .row {
+        display: flex;
+        justify-content: center;
+    }
+</style>

@@ -1,0 +1,73 @@
+﻿@inject SignInManager<ApplicationUser> SignInManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+}
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<style>
+    .nav-pills .nav-link {
+        border-radius: 50px;
+        padding: 10px 20px;
+        color: #333;
+        font-weight: 500;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .nav-pills .nav-link:hover {
+            background-color: rgba(6, 187, 204, 0.1);
+            color: rgba(6, 187, 204, 1);
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: rgba(6, 187, 204, 1);
+            color: white;
+        }
+
+    .nav-icon {
+        font-size: 1.2rem;
+    }
+</style>
+
+<ul class="nav nav-pills flex-column">
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" asp-page="./Index">
+            <i class="bi bi-person nav-icon"></i> Profile
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" asp-page="./Email">
+            <i class="bi bi-envelope nav-icon"></i> Email
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" asp-page="./ChangePassword">
+            <i class="bi bi-lock nav-icon"></i> Password
+        </a>
+    </li>
+    @if (hasExternalLogins)
+    {
+        <li class="nav-item">
+            <a class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">
+                <i class="bi bi-box-arrow-in-right nav-icon"></i> External Logins
+            </a>
+        </li>
+    }
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" asp-page="./TwoFactorAuthentication">
+            <i class="bi bi-shield-lock nav-icon"></i> Two-Factor Auth
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" asp-page="./PersonalData">
+            <i class="bi bi-person-badge nav-icon"></i> Personal Data
+        </a>
+    </li>
+</ul>

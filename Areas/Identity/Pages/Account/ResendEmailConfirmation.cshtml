@@ -1,0 +1,62 @@
+﻿@page
+@model ResendEmailConfirmationModel
+@{
+    ViewData["Title"] = "Resend Email Confirmation";
+}
+
+<style>
+    body {
+        background: linear-gradient(to right, #74ebd5, #ACB6E5);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .card {
+        max-width: 500px;
+        margin: 80px auto;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+    }
+
+    .card-title {
+        font-size: 26px;
+        font-weight: bold;
+        color: rgba(6, 187, 204, 1);
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .btn-outline-custom {
+        color: rgba(6, 187, 204, 1);
+        border: 2px solid rgba(6, 187, 204, 1);
+        border-radius: 30px;
+        padding: 10px 25px;
+        font-weight: bold;
+        transition: all 0.3s ease-in-out;
+        text-decoration: none;
+        width: 100%;
+    }
+
+        .btn-outline-custom:hover {
+            background-color: rgba(6, 187, 204, 1);
+            color: white;
+        }
+</style>
+
+<div class="card">
+    <div class="card-title">Resend Email Confirmation</div>
+    <form method="post">
+        <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+        <div class="form-floating mb-3">
+            <input asp-for="Input.Email" class="form-control" aria-required="true" placeholder="name@example.com" />
+            <label asp-for="Input.Email" class="form-label">Email</label>
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn-outline-custom">Resend</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

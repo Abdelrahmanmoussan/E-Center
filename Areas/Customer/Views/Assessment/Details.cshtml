@@ -1,0 +1,101 @@
+﻿@model IdentityText.Models.ViewModel.AssessmentDetailsVM
+
+@{
+    ViewData["Title"] = "Assessment Details";
+}
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="assessment-card p-4 rounded-4 shadow-sm">
+                <h2 class="text-primary fw-bold mb-3"><i class="bi bi-clipboard-check me-2"></i>@Model.Title</h2>
+
+                <p class="text-muted">@Model.Description</p>
+
+                <p>
+                    <i class="bi bi-calendar-event me-1 text-info"></i>
+                    <strong>Delivery Date:</strong> @Model.DeliveryDate.ToShortDateString()
+                </p>
+
+                <p>
+                    <i class="bi bi-link-45deg me-1 text-primary"></i>
+                    <strong>Task Link:</strong>
+                    <a href="~/AssessmentFile/@Model.AssessmentLink" target="_blank" class="text-decoration-none">
+                        <i class="bi bi-download"></i>
+                    </a>
+                </p>
+
+                @if (!string.IsNullOrEmpty(Model.StudentSolutionPath))
+                {
+                    <hr />
+                    <p>
+                        <i class="bi bi-file-earmark-check me-1 text-success"></i>
+                        <strong>Uploaded Solution:</strong>
+                        <a href="~/AssessmentFile/@Model.StudentSolutionPath" target="_blank" class="text-decoration-none">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+                    </p>
+
+                    <p>
+                        <i class="bi bi-bar-chart-line me-1 text-warning"></i>
+                        <strong>Score:</strong> @Model.Score / @Model.MaxScore
+                    </p>
+
+                    <p>
+                        <i class="bi bi-award me-1 text-info"></i>
+                        <strong>Grade:</strong> @Model.Grade
+                    </p>
+
+                    <p>
+                        <i class="bi bi-chat-left-text me-1 text-secondary"></i>
+                        <strong>Feedback:</strong> @Model.Feedback
+                    </p>
+                }
+                else
+                {
+                    <hr />
+                    <form asp-action="UploadSolution" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="assessmentId" value="@Model.AssessmentId" />
+                        <input type="hidden" name="lectureId" value="@ViewBag.lectureId" />
+                        <div class="mb-3">
+                            <label for="UploadedSolution" class="form-label fw-semibold">Upload Your Solution:</label>
+                            <input type="file" name="UploadedSolution" required class="form-control rounded-pill shadow-sm" />
+                        </div>
+                        <button type="submit" class="btn rounded-pill px-4 custom-blue-btn">
+                            <i class="bi bi-upload me-1"></i> Upload
+                        </button>
+                    </form>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(to right, #f0fdff, #daf5f7);
+    }
+
+    .assessment-card {
+        background: white;
+    }
+
+    .custom-blue-btn {
+        background: transparent;
+        border: 2px solid rgba(6, 187, 204, 1);
+        color: rgba(6, 187, 204, 1);
+        transition: all 0.3s ease;
+    }
+
+        .custom-blue-btn:hover {
+            background-color: rgba(6, 187, 204, 1);
+            color: white;
+            border-color: transparent;
+        }
+</style>

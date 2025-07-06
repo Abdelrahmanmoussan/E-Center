@@ -1,0 +1,152 @@
+﻿@using IdentityText.Enums
+@model IEnumerable<IdentityText.Models.Attendance>
+
+@{
+    ViewData["Title"] = "Attendance History";
+}
+
+<div class="container py-4">
+    <!-- العنوان -->
+    <div class="chart-header mb-4 rounded-3 shadow-sm d-flex justify-content-center align-items-center text-warning">
+        <i class="bi bi-calendar-check me-2"></i> Attendance History
+    </div>
+
+    <!-- فورم الفلترة -->
+    <form method="get" asp-action="ShowAttendance" class="row mb-4 g-3">
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Class Group:</label>
+            <select name="classGroupId" class="form-select rounded-pill">
+                <option value="">-- choose class group --</option>
+                @foreach (var group in Model.Select(a => a.Enrollment.ClassGroup).DistinctBy(g => g.ClassGroupId))
+                {
+                    <option value="@group.ClassGroupId">@group.Title</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Lecture:</label>
+            <select name="lectureId" class="form-select rounded-pill">
+                <option value="">-- choose lecture --</option>
+                @foreach (var lecture in Model.Select(a => a.Lecture).DistinctBy(l => l.LectureId))
+                {
+                    <option value="@lecture.LectureId">@lecture.Title</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-outline-primary w-100 rounded-pill shadow-sm">
+                <i class="bi bi-search me-1"></i> Filter
+            </button>
+        </div>
+    </form>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning text-center">No matching records found.</div>
+    }
+    else
+    {
+        <!-- الجدول -->
+        <div class="table-wrapper rounded-3 overflow-hidden shadow-sm">
+            <table class="table table-bordered table-hover align-middle text-center mb-0" id="attendanceTable">
+                <thead class="gradient-header">
+                    <tr>
+                        <th>Class Name</th>
+                        <th>Lecture</th>
+                        <th>Student</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var a in Model)
+                    {
+                        <tr>
+                            <td>@a.Enrollment.ClassGroup.Title</td>
+                            <td>@a.Lecture.Title</td>
+                            <td>@a.Student.ApplicationUser.FirstName @a.Student.ApplicationUser.LastName</td>
+                            <td>@a.Student.ApplicationUser.Email</td>
+                            <td>
+                                <span class="badge
+                                    @(a.AttendanceStatus == AttendanceStatus.Present ? "bg-success" :
+                                      a.AttendanceStatus == AttendanceStatus.Absent ? "bg-danger" :
+                                      "bg-warning text-dark")">
+                                    @a.AttendanceStatus
+                                </span>
+                            </td>
+                            <td>@a.Remark</td>
+                            <td>@a.Lecture.LectureDate.ToString("yyyy-MM-dd")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<!-- ستايل وتنسيق -->
+<style>
+    .chart-header {
+        background: linear-gradient(to right, #1d3557, #447a9c);
+        padding: 12px 20px;
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+
+    .gradient-header th {
+        background: linear-gradient(to right, #1d3557, #447a9c);
+        color: gold;
+        font-weight: bold;
+        height: 60px;
+        vertical-align: middle;
+    }
+
+    .table-wrapper {
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .table th,
+    .table td {
+        vertical-align: middle;
+    }
+
+    .form-label {
+        font-weight: 600;
+    }
+
+    .form-select {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .btn i {
+        margin-right: 4px;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
+
+    <script>
+        $(document).ready(function () {
+            $('#attendanceTable').DataTable({
+                "language": {
+                    "search": "Search:",
+                    "lengthMenu": "Show _MENU_ entries",
+                    "zeroRecords": "No matching records found",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                    "infoEmpty": "No data available",
+                    "paginate": {
+                        "next": "Next",
+                        "previous": "Previous"
+                    }
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,209 @@
+﻿@model IEnumerable<IdentityText.Models.Enrollment>
+
+@{
+    ViewData["Title"] = "Enrolled Courses";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+<style>
+    .main-card-wrapper {
+        background: linear-gradient(to right, #dffcff, #c0ebf0);
+        border-radius: 1rem;
+        padding: 40px 30px;
+        margin: 30px auto;
+        max-width: 1320px;
+    }
+
+    .enroll-card {
+        background: #ffffff;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 30px;
+        height: 370px;
+        width: 93%;
+        transition: all 0.3s ease-in-out;
+    }
+
+        .enroll-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+    .enroll-image-wrapper {
+        position: relative;
+        height: 200px;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .status-badge {
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 0.4em 1em;
+        font-size: 0.85rem;
+        border-radius: 999px;
+    }
+
+    .enroll-section {
+        padding: 15px 20px;
+        border-top: 1px solid #e0e0e0;
+    }
+
+        .enroll-section h5 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #06bbcc;
+        }
+
+        .enroll-section p {
+            margin: 0;
+            color: #555;
+        }
+
+    .enroll-actions {
+        text-align: center;
+        padding: 15px 20px;
+    }
+
+    .btn-go {
+        background: linear-gradient(to right, #06bbcc, #57d6cf);
+        color: white;
+        border: none;
+        padding: 8px 24px;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: 0.3s ease;
+    }
+
+        .btn-go:hover {
+            background: linear-gradient(to right, #059bab, #49c1c3);
+            transform: scale(1.05);
+        }
+</style>
+
+<div class="container">
+    <div class="d-flex justify-content-center my-3">
+        <h1 class="section-title bg-white text-center text-primary px-2">ALL COURSES</h1>
+    </div>
+
+    <div class="main-card-wrapper">
+        @if (!Model.Any())
+        {
+            <h4 class="text-center text-muted">No courses enrolled yet!</h4>
+        }
+        else
+        {
+            <div class="row justify-content-center">
+                @foreach (var enrollment in Model)
+                {
+                    var imageUrl = Url.Content("~/images/courses/course-default.jpg");
+
+                    <div class="col-md-6 col-lg-4 col-xl-4">
+                        <div class="enroll-card animate__animated animate__fadeInUp">
+                            <div class="enroll-image-wrapper" style="background-image: url('@imageUrl');">
+                                @switch (enrollment.EnrollmentStatus)
+                                {
+                                    case IdentityText.Enums.EnrollmentStatus.PendingPayment:
+                                        <span class="badge status-badge bg-warning text-dark">
+                                            <i class="bi bi-clock-history me-1"></i> Pending
+                                        </span>
+                                        break;
+                                    case IdentityText.Enums.EnrollmentStatus.Active:
+                                        <span class="badge status-badge bg-success">
+                                            <i class="bi bi-check-circle me-1"></i> Active
+                                        </span>
+                                        break;
+                                    case IdentityText.Enums.EnrollmentStatus.Canceled:
+                                        <span class="badge status-badge bg-danger">
+                                            <i class="bi bi-x-circle me-1"></i> Canceled
+                                        </span>
+                                        break;
+                                }
+                            </div>
+
+                            <div class="enroll-section">
+                                <h5 class="text-center"><i class="bi bi-easel-fill me-2"></i> @enrollment.ClassGroup?.Title</h5>
+                                <p>
+                                    <i class="bi bi-person-fill me-1"></i>
+                                    <b>
+                                        Teacher: @enrollment.ClassGroup?.Teacher.ApplicationUser.FirstName 
+                                        @enrollment.ClassGroup?.Teacher.ApplicationUser.LastName
+                                    </b>
+                                </p>
+                            </div>
+
+                            <div class="enroll-section">
+                                <p><i class="bi bi-calendar-event me-1"></i> Enrolled: @enrollment.EnrollmentDate.ToString("dd MMM yyyy")</p>
+                                <p class ="fw-bold">
+                                    <i class="bi bi-credit-card"></i>
+                                     Price: @String.Format("{0:N2} ج.م", enrollment.ClassGroup?.Price)
+                                </p>
+                            </div>
+
+                            <div class="enroll-section enroll-actions">
+                                @if (enrollment.EnrollmentStatus == IdentityText.Enums.EnrollmentStatus.Active)
+                                {
+                                    <a asp-action="EnterCode"
+                                       asp-controller="Lecture"
+                                       asp-area="Customer"
+                                       asp-route-classGroupId="@enrollment.ClassGroupId"
+                                       class="btn btn-go">
+                                        <i class="bi bi-play-circle me-1"></i> Go To Lectures
+                                    </a>
+                                }
+                                else if (enrollment.EnrollmentStatus == IdentityText.Enums.EnrollmentStatus.PendingPayment)
+                                {
+                                    <button type="button" onclick="confirmDelete(@enrollment.EnrollmentId)"
+                                            class="btn btn-danger rounded-pill">
+                                        <i class="bi bi-trash me-1"></i> Delete
+                                    </button>
+                                    <a 
+                                        asp-action="ProcessPayment" 
+                                        asp-route-id="@enrollment.EnrollmentId" 
+                                        class="btn btn-go">
+                                        <i class="bi bi-credit-card me-1"></i> Pay
+                                    </a> 
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @if (TempData["notification"] != null)
+    {
+        <script>
+            toastr.success('@TempData["notification"]');
+        </script>
+    }
+
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#06bbcc",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/Customer/Enrollment/Delete?id=" + id;
+                }
+            });
+        }
+    </script>
+}
+

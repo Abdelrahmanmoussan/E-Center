@@ -1,0 +1,267 @@
+﻿@model IEnumerable<IdentityText.Models.Lecture>
+@{
+    ViewData["Title"] = "Course Lectures";
+}
+
+<style>
+    .timeline {
+        position: relative;
+        margin: 2rem auto;
+        padding: 2rem 0;
+        width: 100%;
+    }
+
+    .timeline-wrapper {
+        background: #e2f8f8;
+        border-radius: 1.5rem;
+        padding: 2rem 1rem;
+        margin: 2rem 0;
+    }
+
+    .timeline::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 100%;
+        background: #05a7b6;
+        z-index: 0;
+    }
+
+    .timeline-item {
+        position: relative;
+        width: 43%;
+        padding: 1rem;
+    }
+
+        .timeline-item:nth-child(odd) {
+            left: 7%;
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+            text-align: left;
+            padding-left: 2.3%;
+        }
+
+        .timeline-item::before {
+            content: attr(data-number);
+            position: absolute;
+            width: 2rem;
+            height: 2rem;
+            background: white;
+            border: 3px solid rgba(6, 187, 204, 1);
+            border-radius: 50%;
+            color: rgba(6, 187, 204, 1);
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.7rem;
+            font-size: 1rem;
+            z-index: 2;
+        }
+
+        .timeline-item:nth-child(1)::before,
+        .timeline-item:nth-child(n+2)::before {
+            top: 1.75rem;
+        }
+
+        .timeline-item:nth-child(odd)::before {
+            right: -1rem;
+        }
+
+        .timeline-item:nth-child(even)::before {
+            left: -1rem;
+        }
+
+        .timeline-item:nth-child(n+2) {
+            margin-top: -16.5rem;
+        }
+
+    .timeline-card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        position: relative;
+        margin-bottom: 2rem;
+        width: 97%;
+        text-align: center;
+    }
+
+        .timeline-card::after {
+            content: "";
+            position: absolute;
+            top: 1.2rem;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+        }
+
+    .timeline-item:nth-child(odd) .timeline-card::after {
+        right: -16px;
+        border-left-color: white;
+    }
+
+    .timeline-item:nth-child(even) .timeline-card::after {
+        left: -16px;
+        border-right-color: white;
+    }
+
+    .timeline-card .card-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: rgba(6, 187, 204, 1);
+        margin-bottom: 0.5rem;
+    }
+
+    .timeline-card .card-description {
+        font-size: 0.95rem;
+        color: #333;
+        margin-bottom: 0.75rem;
+    }
+
+    .timeline-card .card-date {
+        font-size: 0.9rem;
+        color: #888;
+        margin-bottom: 1rem;
+    }
+
+    .timeline-card .video-wrapper {
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .timeline-card .card-footer {
+        background: none;
+        border-top: 1px solid #eee;
+        padding-top: 0.75rem;
+        margin-top: 1rem;
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+        .timeline-card .card-footer span,
+        .timeline-card .card-footer div {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+    .assessment-btn {
+        padding: 4px 10px !important;
+        font-size: 0.8rem !important;
+    }
+
+</style>
+
+<div class="container py-2">
+    <div class="d-flex justify-content-center my-2">
+        <h1 class="section-title bg-white text-center text-primary px-3">
+            Course Lectures
+        </h1>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle me-1"></i> There are currently no lectures added for this course.
+        </div>
+    }
+    else
+    {
+        <div class="timeline-wrapper">
+            <div class="timeline">
+                @{
+                    var studentId = (int)ViewBag.StudentId;
+                    int index = 1;
+                }
+                @foreach (var lecture in Model)
+                {
+                    var attendance = lecture.Attendances.FirstOrDefault(a => a.StudentId == studentId);
+                    var embedUrl = lecture.VideoURL?.Split('&')[0]?.Replace("watch?v=", "embed/");
+                    <div class="timeline-item" data-number="@index">
+                        <div class="timeline-card">
+                            <h5 class="card-title">@lecture.Title</h5>
+
+                            <p class="card-description">
+                                @(!string.IsNullOrWhiteSpace(lecture.Description) ? lecture.Description : "No description available.")
+                            </p>
+
+                            @if (!string.IsNullOrEmpty(lecture.VideoURL))
+                            {
+                                <div class="video-wrapper ratio ratio-16x9">
+                                    <iframe src="@embedUrl"
+                                            frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowfullscreen>
+                                    </iframe>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning text-center mb-3">
+                                    <i class="bi bi-exclamation-triangle-fill me-1"></i> No video available for this lecture.
+                                </div>
+                            }
+
+                            <div class="card-footer text-center">
+                                <div class="text-secondary d-flex justify-content-center flex-wrap column-gap-4 row-gap-1 small">
+                                    <div>
+                                        <i class="bi bi-clipboard-check me-1"></i> Attendance Status:
+                                        @if (attendance != null)
+                                        {
+                                            <span>@attendance.AttendanceStatus</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Not recorded</span>
+                                        }
+                                    </div>
+
+                                    @{
+                                        var assessment = lecture?.Assessment;
+                                        var assessmentResult = assessment?.AssessmentResults.FirstOrDefault(ar => ar.StudentId == studentId);
+                                    }
+
+                                    <div>
+                                        <span class="fw-semibold">Assessment:</span>
+                                        @if (assessment == null)
+                                        {
+                                            <span style="padding: 4px 10px; border: 1px solid #ccc; border-radius: 20px; color: #6c757d; background: #f8f9fa;" class="assessment-btn">
+                                                <i class="bi bi-slash-circle me-1"></i> No assessment
+                                            </span>
+                                        }
+                                        else if (assessmentResult == null || assessmentResult.Score == 0)
+                                        {
+                                            <a href="@Url.Action("Details", "Assessment", new { area = "Customer", lectureId = lecture.LectureId })"
+                                               class="assessment-btn"
+                                               style="border: 1px solid #ffc107; border-radius: 20px; color: #856404; text-decoration: none; background: #fffbe6;">
+                                                <i class="bi bi-info-circle me-1"></i> Not evaluated
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.Action("Details", "Assessment", new { area = "Customer", lectureId = lecture.LectureId })"
+                                               class="assessment-btn"
+                                               style="border: 1px solid #198754; border-radius: 20px; color: #155724; text-decoration: none; background: #e6f9eb;">
+                                                <i class="bi bi-check-circle-fill me-1"></i> Evaluated
+                                            </a>
+                                        }
+                                    </div>
+
+                                    <span><i class="bi bi-calendar-event me-1"></i> Lecture Date: @lecture.LectureDate.ToString("yyyy-MM-dd")</span>
+                                    <span><i class="bi bi-clock me-1"></i> Added at: @lecture.CreatedAt.ToString("yyyy-MM-dd HH:mm")</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    index++;
+                }
+            </div>
+        </div>
+    }
+</div>

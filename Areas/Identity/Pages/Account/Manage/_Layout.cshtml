@@ -1,0 +1,91 @@
+﻿@{
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
+    {
+        Layout = parentLayout.ToString();
+    }
+    else
+    {
+        Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+    }
+}
+
+<style>
+    body {
+        background: linear-gradient(to right, #dffcff, #c0ebf0);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .manage-container {
+        margin: 30px auto;
+        max-width: 1100px;
+    }
+
+    .manage-title {
+        background: linear-gradient(to right, rgba(6,187,204,1), rgba(6,150,180,1));
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 1rem;
+        font-weight: bold;
+        font-size: 2rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .manage-subtitle {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #444;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .nav-section {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* زودت الشفافية والحجم */
+        padding: 20px;
+    }
+
+    .content-section {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* نفس التعديل */
+        padding: 30px;
+    }
+
+
+    .nav-pills .nav-link.active {
+        background-color: rgba(6,187,204,1);
+        color: white;
+    }
+
+    .nav-pills .nav-link {
+        border-radius: 50px;
+        color: #333;
+        transition: 0.3s;
+    }
+
+        .nav-pills .nav-link:hover {
+            background-color: rgba(6,187,204,0.1);
+        }
+</style>
+
+<div class="container manage-container">
+    <h1 class="manage-title">Manage Your Account</h1>
+    <h2 class="manage-subtitle">Adjust your settings and preferences</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-3 nav-section me-md-3">
+            <partial name="_ManageNav" />
+        </div>
+        <div class="col-md-8 content-section">
+            @RenderBody()
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

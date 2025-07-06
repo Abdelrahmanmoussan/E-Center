@@ -1,0 +1,133 @@
+﻿@model IdentityText.Models.ViewModel.AssessmentVM
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container d-flex justify-content-center mt-5">
+    <div class="col-md-8">
+
+        <!-- عنوان جذاب -->
+        <div class="chart-header mb-4 rounded-3 shadow-sm d-flex justify-content-center align-items-center text-warning">
+            <i class="bi bi-file-earmark-text-fill me-2"></i> Add New Assessment
+        </div>
+
+        <div class="p-4 rounded-3 shadow-sm bg-white border">
+
+            <form asp-action="Create">
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label"><i class="bi bi-fonts"></i> Title</label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label"><i class="bi bi-card-text"></i> Description</label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="DeliveryDate" class="form-label"><i class="bi bi-calendar-event"></i> Delivery Date</label>
+                    <input asp-for="DeliveryDate" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="DeliveryDate" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="CreatedAt" class="form-label"><i class="bi bi-calendar-plus"></i> Created At</label>
+                    <input asp-for="CreatedAt" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="CreatedAt" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="AssessmentLink" class="form-label"><i class="bi bi-link-45deg"></i> Assessment Link</label>
+                    <input asp-for="AssessmentLink" class="form-control" />
+                    <span asp-validation-for="AssessmentLink" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="MaxScore" class="form-label"><i class="bi bi-bar-chart-line"></i> Max Score</label>
+                    <input asp-for="MaxScore" class="form-control" type="number" />
+                    <span asp-validation-for="MaxScore" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ClassGroupId" class="form-label"><i class="bi bi-people-fill"></i> Class Group</label>
+                    <select asp-for="ClassGroupId" class="form-select" asp-items="@Model.ClassGroupList" id="ClassGroupId"></select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="LectureId" class="form-label"><i class="bi bi-easel-fill"></i> Lecture</label>
+                    <select asp-for="LectureId" class="form-select" asp-items="@Model.LectureList" id="LectureId"></select>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-outline-success px-4 rounded-pill shadow-sm">
+                        <i class="bi bi-check-circle me-2"></i> Create
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4 rounded-pill shadow-sm">
+                        <i class="bi bi-arrow-left-circle me-2"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+               $(document).ready(function () {
+            $('#ClassGroupId').change(function () {
+                var classGroupId = $(this).val(); // خذ القيمة المختارة
+                if (classGroupId) {
+                    $.ajax({
+                        url: '@Url.Action("GetLecturesByClassGroup", "Assessment", new { area = "Admin" })',
+                        type: 'GET',
+                        data: { classGroupId: classGroupId }, // استخدم المتغير الصحيح
+                        success: function (data) {
+                            var lectureSelect = $('#LectureId');
+                            lectureSelect.empty();
+                            lectureSelect.append($('<option>').val('').text('Select Lecture'));
+                            $.each(data, function (i, lecture) {
+                                lectureSelect.append($('<option>').val(lecture.lectureId).text(lecture.title));
+                            });
+                        },
+                        error: function () {
+                            alert('Error loading lectures.');
+                        }
+                    });
+                } else {
+                    $('#LectureId').empty().append($('<option>').val('').text('Select Lecture'));
+                }
+            });
+        });
+
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<style>
+    .chart-header {
+        background: linear-gradient(to bottom, #1d3557, #447a9c);
+        color: white;
+        padding: 12px 20px;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .form-control,
+    .form-select {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+</style>

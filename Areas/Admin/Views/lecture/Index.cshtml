@@ -1,0 +1,168 @@
+﻿@model IEnumerable<IdentityText.Models.Lecture>
+
+@{
+    ViewData["Title"] = "Lectures";
+}
+
+<!-- العنوان -->
+<div class="chart-header mb-4 rounded-3 shadow-sm d-flex justify-content-center align-items-center text-warning">
+    <i class="bi bi-journal-text me-2"></i> All Lectures
+</div>
+
+<!-- زر Create بالوسط -->
+<p class="text-center">
+    <a href="/Admin/Lecture/Create" class="btn btn-outline-success rounded-pill px-4 shadow-sm">
+        <i class="bi bi-plus-circle me-2"></i> Create
+    </a>
+</p>
+
+<div class="table-wrapper rounded-3 overflow-hidden shadow-sm">
+    <table class="table table-bordered table-hover align-middle mb-0 text-center">
+        <thead>
+            <tr class="gradient-header">
+                <th>#</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Lecture Date</th>
+                <th>Video URL</th>
+                <th>Created At</th>
+                <th>Class Group</th>
+                <th>Assessment</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.LectureId</td>
+                    <td>@item.Title</td>
+                    <td>
+                        @{
+                            var desc = item.Description ?? "";
+                            var shortDesc = desc.Length > 40 ? desc.Substring(0, 40) + "..." : desc;
+                        }
+                        @shortDesc
+                        @if (desc.Length > 40)
+                        {
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#descModal-@item.LectureId">عرض المزيد</a>
+
+                            <!-- Modal -->
+                            <div style="color:#000" class="modal fade" id="descModal-@item.LectureId" tabindex="-1" aria-labelledby="descModalLabel-@item.LectureId" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="descModalLabel-@item.LectureId">وصف المحاضرة</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            @desc
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </td>
+                    <td>@item.LectureDate.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.VideoURL))
+                        {
+                            <a href="@item.VideoURL" target="_blank" class="btn btn-light btn-sm">Link</a>
+                        }
+                        else
+                        {
+                            <span>N/A</span>
+                        }
+                    </td>
+                    <td>@item.CreatedAt.ToShortDateString()</td>
+                    <td>@(item.ClassGroup != null ?item.ClassGroup.Title : "N/A")</td>
+                    <td>
+                        @if (item.Assessment != null && !string.IsNullOrEmpty(item.Assessment.AssessmentLink))
+                        {
+                            <a href="@item.Assessment.AssessmentLink" target="_blank" class="btn btn-info btn-sm">Assessment</a>
+                        }
+                        else
+                        {
+                            <span>N/A</span>
+                        }
+                    </td>
+                    <td>
+                        <a href="/Admin/Lecture/Edit?id=@item.LectureId" class="btn btn-outline-warning btn-sm rounded-pill me-1 shadow-sm">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <button class="btn btn-outline-danger btn-sm rounded-pill shadow-sm" onclick="confirmDelete(@item.LectureId)">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                     
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .chart-header {
+        background: linear-gradient(to bottom, #1d3557, #447a9c);
+        padding: 12px 20px;
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+
+    thead tr.gradient-header th {
+        background: linear-gradient(to bottom, #1d3557, #447a9c);
+        color: gold;
+        text-align: center;
+        vertical-align: middle;
+        height: 60px;
+        font-weight: bold;
+    }
+
+    .table-wrapper {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #dee2e6;
+        margin-bottom: 2rem;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    .btn-sm i {
+        margin-right: 4px;
+    }
+</style>
+
+@section Scripts {
+    @if (TempData["notification"] != null)
+    {
+        <script>
+            toastr.success('@TempData["notification"]');
+        </script>
+    }
+
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/Admin/Lecture/Delete?id=" + id;
+
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                    });
+                }
+            });
+        }
+    </script>
+}

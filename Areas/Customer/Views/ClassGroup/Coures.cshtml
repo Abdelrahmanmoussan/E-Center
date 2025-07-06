@@ -1,0 +1,139 @@
+﻿@using IdentityText.Enums
+@model IEnumerable<IdentityText.Models.ClassGroup>
+
+@{
+    ViewData["Title"] = "Class Groups";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<div class="container-xxl py-2">
+    <div class="container">
+        <div class="d-flex justify-content-center my-2">
+            <h1 class="section-title bg-white text-center text-primary px-3">
+                ALL COURSES
+            </h1>
+        </div>
+
+        <!--filter-->
+
+        <form method="get" asp-action="Coures" class="filter-box mb-4">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Subject</label>
+                    <select name="subjectName" class="form-select rounded-pill shadow-sm">
+                        <option value="">All Subjects</option>
+                        @foreach (var subject in ViewBag.Subjects)
+                        {
+                            <option value="@subject.Title">@subject.Title</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Teacher</label>
+                    <select name="teacherName" class="form-select rounded-pill shadow-sm">
+                        <option value="">All Teachers</option>
+                        @foreach (var teacher in ViewBag.Teachers)
+                        {
+                            <option value="@teacher.ApplicationUser.FirstName">@teacher.ApplicationUser.FirstName</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Min Price</label>
+                    <input type="number" class="form-control rounded-pill shadow-sm" placeholder="Min Price" name="minPrice" />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Max Price</label>
+                    <input type="number" class="form-control rounded-pill shadow-sm" placeholder="Max Price" name="maxPrice" />
+                </div>
+                <div class="col-md-2 text-center">
+                    <button type="submit" class="btn rounded-pill px-4 shadow-sm w-100 custom-blue-btn">
+                        <i class="bi bi-funnel-fill me-2"></i> Filter
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!--cards-->
+
+        <div class="row g-4">
+            @foreach (var course in Model)
+            {
+                <div class="col-lg-3 col-md-6">
+                    <div class="course-item bg-light rounded-4 shadow-sm overflow-hidden d-flex flex-column h-100">
+                        <div class="position-relative overflow-hidden">
+                            <img class="img-fluid" src="~/Math2.webp" alt="Course Image" style="height: 200px; object-fit: cover;">
+                            <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-3">
+                                <a asp-action="Details" asp-route-id="@course.ClassGroupId" class="btn btn-sm btn-primary px-3" style="border-radius: 30px;">View Details</a>
+                            </div>
+                        </div>
+
+                        <div class="p-4 pb-0 flex-grow-1 d-flex flex-column text-start">
+                            <h3 class="mb-2">@course.Title</h3>
+                            <h6 class="mb-2">@course.Price EGP</h6>
+                            <div class="mb-2 small">
+                                <div><i class="fa fa-book text-primary me-1"></i>@course.Subject.Title</div>
+                                <div><i class="fa fa-calendar-alt text-primary me-1"></i>@course.AcademicYear.Name</div>
+                            </div>
+                        </div>
+
+                        <!-- Footer: 3 أجزاء -->
+                        <div class="d-flex border-top mt-auto small">
+                            <small class="flex-fill text-center border-end py-2">
+                                <i class="fa fa-user-tie text-primary me-2"></i>
+                                @course.Teacher.ApplicationUser.FirstName @course.Teacher.ApplicationUser.LastName
+                            </small>
+                            <small class="flex-fill text-center border-end py-2">
+                                <i class="fa fa-clock text-primary me-2"></i>
+                                @{
+                                    var days = (course.EndDate - course.StartDate).TotalDays;
+                                    var totalWeeks = days / 7;
+                                    var totalLectures = (int)Math.Floor(totalWeeks * 2);
+                                }
+                                @totalLectures Lectures (Days: @days)
+                            </small>
+                            <small class="flex-fill text-center py-2">
+                                <i class="fa fa-user text-primary me-2"></i> @ViewBag.StudentNumber
+                            </small>
+                        </div>
+                    </div>
+
+
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .filter-box {
+        background: linear-gradient(to right, #e2f6fa, #cdeef3);
+        border-radius: 25px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+        padding: 30px;
+    }
+
+    .img-fluid {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+
+    .custom-blue-btn {
+        background: transparent;
+        border: 2px solid rgba(6, 187, 204, 1);
+        color: rgba(6, 187, 204, 1);
+        transition: all 0.3s ease;
+    }
+
+        .custom-blue-btn:hover {
+            background-color: rgba(6, 187, 204, 1);
+            color: white;
+            border-color: transparent;
+        }
+</style>

@@ -1,0 +1,61 @@
+﻿@page
+@model ConfirmEmailModel
+@{
+    ViewData["Title"] = "Email Confirmation";
+}
+
+<style>
+    body {
+        background: linear-gradient(to right, #74ebd5, #ACB6E5);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .confirmation-card {
+        background-color: white;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 2.5rem;
+        max-width: 600px;
+        margin: 5rem auto;
+        text-align: center;
+    }
+
+    .confirmation-title {
+        font-size: 2rem;
+        font-weight: bold;
+        color: rgba(6, 187, 204, 1);
+        margin-bottom: 1.5rem;
+    }
+
+    .status-message {
+        font-size: 1.1rem;
+        color: #333;
+        margin-top: 1rem;
+    }
+
+    .custom-login-btn {
+        border-color: rgba(6, 187, 204, 1);
+        color: rgba(6, 187, 204, 1);
+        font-weight: 500;
+        transition: 0.3s ease;
+    }
+
+        .custom-login-btn:hover {
+            background-color: rgba(6, 187, 204, 1);
+            color: white;
+        }
+</style>
+
+<div class="confirmation-card">
+    <div class="confirmation-title">Email Confirmation</div>
+
+    <partial name="_StatusMessage" model="Model.StatusMessage" />
+
+    <p class="status-message">
+       You can now log in to your account.
+    </p>
+    <a asp-area="Identity" asp-controller="Account" asp-action="Login"
+       class="btn btn-outline-primary px-4 rounded-pill shadow-sm custom-login-btn">
+        <i class="bi bi-box-arrow-in-right me-2"></i> Login
+    </a>
+</div>

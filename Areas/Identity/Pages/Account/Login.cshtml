@@ -1,0 +1,141 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<style>
+    body {
+        background: linear-gradient(to right, #dffcff, #c0ebf0);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .login-card {
+        max-width: 450px;
+        margin: 50px auto;
+        padding: 30px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-title {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 30px;
+        color: rgba(6, 187, 204, 1);
+        text-align: center;
+    }
+
+    .custom-input {
+        border-radius: 50px !important;
+        padding: 14px 20px;
+    }
+
+    .field-label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: block;
+        color: #333;
+    }
+
+    .btn-login {
+        border: 2px solid rgba(6, 187, 204, 1);
+        color: rgba(6, 187, 204, 1);
+        border-radius: 50px;
+        transition: 0.3s;
+    }
+
+        .btn-login:hover {
+            background-color: rgba(6, 187, 204, 1);
+            color: white;
+        }
+
+    a {
+        color: rgba(6, 187, 204, 1);
+    }
+
+    .form-check-label {
+        font-weight: 500;
+    }
+
+    .custom-title {
+        background: linear-gradient(to right, rgba(6,187,204,1), rgba(6,150,180,1));
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 1rem;
+        font-weight: bold;
+        font-size: 2rem;
+        border: none;
+        box-shadow: none;
+        margin: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .login-card {
+        max-width: 450px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        margin-top: 0rem;
+    }
+
+</style>
+
+
+<section>
+    <!-- مسافة فوق العنوان -->
+    <div class="d-flex justify-content-center mb-2 mt-2">
+
+        <h1 class="custom-title text-center">
+            Login to Your Account
+        </h1>
+    </div>
+
+    <div class="container py-3">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-12 col-lg-6">
+                <div class="login-card">
+
+
+                    <form id="account" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                        <label for="Input_Email" class="field-label">Email</label>
+                        <div class="mb-3">
+                            <input asp-for="Input.Email" class="form-control custom-input" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+
+                        <label for="Input_Password" class="field-label">Password</label>
+                        <div class="mb-3">
+                            <input asp-for="Input.Password" class="form-control custom-input" autocomplete="current-password" aria-required="true" placeholder="password" />
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" asp-for="Input.RememberMe" />
+                            <label class="form-check-label" asp-for="Input.RememberMe">
+                                @Html.DisplayNameFor(m => m.Input.RememberMe)
+                            </label>
+                        </div>
+
+                        <button id="login-submit" type="submit" class="w-100 btn btn-login py-2">Log in</button>
+
+                        <div class="mt-3 text-center">
+                            <p><a asp-page="./ForgotPassword">Forgot your password?</a></p>
+                            <p><a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a></p>
+                            <p><a asp-page="./ResendEmailConfirmation">Resend email confirmation</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

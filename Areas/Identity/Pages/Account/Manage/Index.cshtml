@@ -1,0 +1,139 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<style>
+    /* إزالة المسافات من الصفحة بالكامل */
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        background: linear-gradient(to right, #dffcff, #c0ebf0);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* جعل الحاوية تمتد كامل عرض الصفحة بدون حواف أو مسافات */
+    .container-fluid.p-0 {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+    }
+
+    /* الفورم ياخد العرض كامل، بدون حواف دائرية وظل */
+    .profile-card {
+        background-color: white;
+        width: 100%;
+        min-height: 100vh; /* يملأ طول الشاشة */
+        padding: 30px 20px; /* بادينج مناسب */
+        margin: 0;
+        box-sizing: border-box;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .profile-title {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: rgba(6,187,204,1);
+        text-align: center;
+    }
+
+    .form-control {
+        border-radius: 50px !important;
+        padding: 12px 20px;
+    }
+
+    .form-label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .btn-outline-custom {
+        background-color: transparent;
+        color: rgba(6,187,204,1);
+        border: 2px solid rgba(6,187,204,1);
+        border-radius: 50px;
+        padding: 10px 30px;
+        font-weight: bold;
+        transition: 0.3s ease;
+        width: 100%;
+    }
+
+        .btn-outline-custom:hover {
+            background-color: rgba(6,187,204,1);
+            color: white;
+        }
+
+    .profile-image {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+        margin: 0 auto 20px auto;
+    }
+
+</style>
+
+<div class="container-fluid p-0">
+    <div class="profile-card">
+        <h2 class="text-center mb-4" style="color: rgba(6,187,204,1); font-weight: bold;">@ViewData["Title"]</h2>
+
+        <partial name="_StatusMessage" for="StatusMessage" />
+
+        <form id="profile-form" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+            <!-- صورة المستخدم -->
+            <img class="profile-image" src="/@Model.Input.Photo" alt="User Image" />
+
+            <div class="mb-3">
+                <label asp-for="Input.Photo" class="form-label">Upload New Photo</label>
+                <input type="file" asp-for="Input.Photo" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.FirstName" class="form-label">First Name</label>
+                <input asp-for="Input.FirstName" class="form-control" placeholder="First Name" />
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.LastName" class="form-label">Last Name</label>
+                <input asp-for="Input.LastName" class="form-control" placeholder="Last Name" />
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label">Username</label>
+                <input asp-for="Username" class="form-control" disabled placeholder="Username" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.PhoneNumber" class="form-label">Phone Number</label>
+                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Phone Number" />
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Address" class="form-label">Address</label>
+                <input asp-for="Input.Address" class="form-control" placeholder="Address" />
+                <span asp-validation-for="Input.Address" class="text-danger"></span>
+            </div>
+
+            <button id="update-profile-button" type="submit" class="btn-outline-custom">
+                <i class="bi bi-check-circle me-2"></i> Save Changes
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

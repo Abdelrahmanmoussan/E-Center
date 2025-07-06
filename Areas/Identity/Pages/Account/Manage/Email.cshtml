@@ -1,0 +1,149 @@
+﻿@page
+@model EmailModel
+@{
+    ViewData["Title"] = "Manage Email";
+    ViewData["ActivePage"] = ManageNavPages.Email;
+}
+
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        background: linear-gradient(to right, #dffcff, #c0ebf0);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container-fluid.p-0 {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .profile-card {
+        background-color: white;
+        width: 100%;
+        padding: 30px 20px;
+        box-sizing: border-box;
+        border-radius: 0;
+        box-shadow: none;
+        min-height: auto;
+        margin: 0;
+    }
+
+    .form-control {
+        border-radius: 50px !important;
+        padding: 12px 20px;
+    }
+
+    .form-label {
+        font-weight: bold;
+        margin-bottom: 6px;
+    }
+
+    /* زرار تغيير الايميل - outline بحواف دائرية */
+    .btn-change-email {
+        border-radius: 50px;
+        padding: 14px 20px;
+        font-weight: bold;
+        width: 100%;
+        font-size: 1.1rem;
+        color: rgba(6,187,204,1);
+        border: 2px solid rgba(6,187,204,1);
+        background-color: transparent;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        .btn-change-email:hover {
+            background-color: rgba(6,187,204,1);
+            color: white;
+            border-color: rgba(6,187,204,1);
+        }
+
+    .btn-link {
+        color: rgba(6,187,204,1);
+        font-weight: bold;
+        padding: 0;
+        border: none;
+        background: none;
+        text-decoration: underline;
+        cursor: pointer;
+        margin-top: 5px;
+        display: inline-block;
+    }
+
+        .btn-link:hover {
+            color: #049aa8;
+            text-decoration: none;
+        }
+
+    .input-group-text {
+        border-radius: 0 50px 50px 0 !important;
+        background-color: transparent;
+        color: green;
+        font-weight: bold;
+        font-size: 1.5rem;
+        border: none;
+    }
+
+    .text-danger {
+        font-size: 0.9rem;
+    }
+
+    .mb-3 {
+        margin-bottom: 20px;
+    }
+
+    .text-title {
+        text-align: center;
+        color: rgba(6,187,204,1);
+        font-weight: bold;
+        font-size: 24px;
+        margin-bottom: 30px;
+    }
+</style>
+
+<div class="container-fluid p-0">
+    <div class="profile-card">
+        <h2 class="text-center mb-4" style="color: rgba(6,187,204,1); font-weight: bold;"> Change You email </h2>
+
+        <partial name="_StatusMessage" for="StatusMessage" />
+
+        <form id="email-form" method="post">
+            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+
+            @if (Model.IsEmailConfirmed)
+            {
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Current Email</label>
+                    <div class="input-group">
+                        <input asp-for="Email" class="form-control" placeholder="Your email" disabled />
+                        <span class="input-group-text">✓</span>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Current Email</label>
+                    <input asp-for="Email" class="form-control" placeholder="Your email" disabled />
+                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
+                </div>
+            }
+
+            <div class="mb-3">
+                <label asp-for="Input.NewEmail" class="form-label">New Email</label>
+                <input asp-for="Input.NewEmail" class="form-control" autocomplete="email" placeholder="Enter new email" />
+                <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
+            </div>
+
+            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="btn-change-email">Change Email</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

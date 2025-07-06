@@ -1,0 +1,134 @@
+﻿@model IEnumerable<IdentityText.Models.ViewModel.SubscriptionVM>
+
+@{
+    ViewData["Title"] = "الاشتراكات الخاصة بك";
+}
+
+
+<div class="d-flex justify-content-center my-2">
+    <h1 class="section-title bg-white text-center text-primary px-3">
+
+        Your Subscriptions
+    </h1>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center shadow-sm rounded-pill">
+        You don't have any subscriptions yet.
+    </div>
+}
+else
+{
+    <div class="container my-5">
+        <div class="table-wrapper shadow-sm rounded-4 overflow-hidden">
+            <table class="table text-center align-middle custom-table m-0">
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Status</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Course Code</th>
+                        <th>Download</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.ClassGroupTitle</td>
+                            <td>
+                                @if (item.SubscriptionStatus == IdentityText.Enums.SubscriptionStatus.Active)
+                                {
+                                    <span class="badge bg-success px-3 py-2">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger px-3 py-2">Expired</span>
+                                }
+                            </td>
+                            <td>@item.StartDate.ToString("yyyy-MM-dd")</td>
+                            <td>@item.EndDate.ToString("yyyy-MM-dd")</td>
+                            <td>
+                                <span class="code-text">@item.Code</span>
+
+                                <button type="button"
+                                        class="btn btn-outline-info btn-sm rounded-pill shadow-sm ms-2 copy-btn"
+                                        data-code="@item.Code"
+                                        title="Copy Code">
+                                    <i class="bi bi-file-earmark-text me-1"></i>
+                                </button>
+                            </td>
+
+
+                            <td>
+                                <a asp-action="DownloadPDF" asp-route-code="@item.Code"
+                                   class="btn btn-outline-info btn-sm rounded-pill shadow-sm">
+                                    <i class="bi bi-file-earmark-pdf"></i> PDF
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+}
+
+<style>
+    .table-wrapper {
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .custom-table thead {
+        background: linear-gradient(to right, #06bbcc, #007c91);
+        color: white;
+    }
+
+    .custom-table th,
+    .custom-table td {
+        padding: 16px;
+        font-size: 15px;
+        vertical-align: middle;
+        border: none;
+    }
+
+    .custom-table tbody tr {
+        background-color: white;
+        transition: transform 0.2s ease;
+    }
+
+        .custom-table tbody tr:hover {
+            transform: scale(1.01);
+        }
+</style>
+
+}
+
+
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const code = this.getAttribute('data-code');
+                navigator.clipboard.writeText(code)
+                    .then(() => {
+                        // تغيير الأيقونة مؤقتاً بعد النسخ
+                        const originalIcon = this.innerHTML;
+                        this.innerHTML = '<i class="bi bi-check2-circle"></i>';
+                        setTimeout(() => {
+                            this.innerHTML = originalIcon;
+                        }, 1500);
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy!', err);
+                    });
+            });
+        });
+    </script>
+}

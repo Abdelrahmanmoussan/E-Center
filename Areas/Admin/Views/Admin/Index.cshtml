@@ -1,0 +1,152 @@
+﻿@model IdentityText.ViewModel.DashboardViewModel
+
+@{
+    ViewData["Title"] = "لوحة التحكم";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <h1 class="mb-4 text-primary fw-bold">
+        <i class="bi bi-speedometer2 me-2"></i>لوحة التحكم
+    </h1>
+
+    <!-- Main Stats -->
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-gradient bg-primary text-white">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-people-fill me-2"></i>عدد الطلاب</h6>
+                    <h3 class="fw-bold">@Model.StudentsCount</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-gradient bg-success text-white">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-person-badge-fill me-2"></i>عدد المدرسين</h6>
+                    <h3 class="fw-bold">@Model.TeachersCount</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-gradient bg-info text-white">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-journal-code me-2"></i>عدد الكورسات</h6>
+                    <h3 class="fw-bold">@Model.TotalCourses</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-gradient bg-warning text-white">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-cash-coin me-2"></i>إجمالي الإيرادات</h6>
+                    <h4 class="fw-bold">@Model.TotalRevenue.ToString("C")</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Transactions & Messages -->
+    <div class="row g-4 mt-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-bold">
+                    <i class="bi bi-receipt me-2 text-primary"></i>المعاملات الأخيرة
+                </div>
+                <ul class="list-group list-group-flush">
+                    @if (Model.RecentTransactions?.Any() == true)
+                    {
+                        foreach (var transaction in Model.RecentTransactions)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-person me-1 text-muted"></i>@transaction.StudentName</span>
+                                <span class="text-success fw-bold">@transaction.Amount.ToString("C")</span>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="list-group-item text-muted">لا توجد معاملات حالياً</li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-bold">
+                    <i class="bi bi-chat-dots me-2 text-primary"></i>الرسائل الأخيرة
+                </div>
+                <ul class="list-group list-group-flush">
+                    @if (Model.RecentMessages?.Any() == true)
+                    {
+                        foreach (var msg in Model.RecentMessages)
+                        {
+                            <li class="list-group-item">
+                                <strong><i class="bi bi-person-lines-fill me-1"></i>@msg.SenderName:</strong> @msg.MessagePreview
+                                <br />
+                                <small class="text-muted"><i class="bi bi-clock me-1"></i>@msg.SentAt.ToShortTimeString()</small>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="list-group-item text-muted">لا توجد رسائل حالياً</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Events & Todo List -->
+    <div class="row g-4 mt-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-bold">
+                    <i class="bi bi-calendar-event me-2 text-primary"></i>الأحداث القادمة
+                </div>
+                <ul class="list-group list-group-flush">
+                    @if (Model.CalendarEvents?.Any() == true)
+                    {
+                        foreach (var evt in Model.CalendarEvents)
+                        {
+                            <li class="list-group-item">
+                                <strong><i class="bi bi-calendar-check me-1 text-success"></i>@evt.Title</strong>
+                                <br />
+                                <small class="text-muted"><i class="bi bi-clock me-1"></i>@evt.EventDate.ToShortDateString()</small>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="list-group-item text-muted">لا توجد أحداث مجدولة</li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-bold">
+                    <i class="bi bi-list-task me-2 text-primary"></i>المهام
+                </div>
+                <ul class="list-group list-group-flush">
+                    @if (Model.TodoList?.Any() == true)
+                    {
+                        foreach (var task in Model.TodoList)
+                        {
+                            <li class="list-group-item">
+                                <i class="bi @(task.IsCompleted ? "bi-check-circle-fill text-success" : "bi-circle text-secondary") me-2"></i>
+                                @task.Task
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="list-group-item text-muted">لا توجد مهام حالياً</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

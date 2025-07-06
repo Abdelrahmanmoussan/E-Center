@@ -1,0 +1,199 @@
+﻿@model IdentityText.Models.ViewModel.ClassGroupVM
+
+@{
+    ViewData["Title"] = "Create Class Group";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-center mb-4">
+        <h1 class="custom-title text-center">
+            <i class="bi bi-people-fill me-2"></i> Create New Class Group
+        </h1>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card p-4">
+                <div class="card-body">
+                    <form asp-action="Create" method="post" class="needs-validation" novalidate>
+                        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
+                        {
+                            <div asp-validation-summary="All" class="alert alert-danger"></div>
+                        }
+
+                        <div class="form-outline">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" placeholder="Class Title" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-outline">
+                            <label asp-for="Location" class="form-label"></label>
+                            <input asp-for="Location" class="form-control" placeholder="Location" />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-outline">
+                            <label asp-for="Price" class="form-label"></label>
+                            <input asp-for="Price" class="form-control" placeholder="Price" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-outline">
+                            <label asp-for="StartDate" class="form-label"></label>
+                            <input asp-for="StartDate" type="date" class="form-control" />
+                            <span asp-validation-for="StartDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-outline">
+                            <label asp-for="EndDate" class="form-label"></label>
+                            <input asp-for="EndDate" type="date" class="form-control" />
+                            <span asp-validation-for="EndDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-outline">
+                            <label asp-for="AcademicYearId" class="form-label"></label>
+                            <select asp-for="AcademicYearId" class="form-select" asp-items="@Model.AcademicYearsList">
+                                <option value="">Select Academic Year</option>
+                            </select>
+                            <span asp-validation-for="AcademicYearId" class="text-danger"></span>
+                        </div>
+
+                        @* لا تحذف هذه الحقول المخفية لاحقًا *@
+                        @* 
+                        <div class="form-outline">
+                            <input asp-for="SubjectId" class="form-control" value="@Model.SubjectId" hidden />
+                            <label asp-for="SubjectId" class="form-label"></label>
+                        </div>
+
+                        <div class="form-outline">
+                            <input asp-for="TeacherId" class="form-control" value="@Model.TeacherId" hidden />
+                            <label asp-for="TeacherId" class="form-label"></label>
+                        </div>
+                        *@
+
+                        <div class="d-flex justify-content-center mt-4">
+                            <button type="submit" class="btn btn-submit px-5"> <i class="bi bi-check-circle me-2"></i> Create </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            function loadTeachers(subjectId, selectedTeacherId) {
+                const teacherSelect = $('#teacherSelect');
+                const loadingSpinner = $('#teacherLoading');
+
+                teacherSelect.prop('disabled', true);
+                loadingSpinner?.removeClass('d-none');
+
+                teacherSelect.empty().append('<option value="">-- Select Teacher --</option>');
+
+                if (subjectId) {
+                    $.ajax({
+                        url: '@Url.Action("GetTeachersBySubject")',
+                        data: { subjectId: subjectId },
+                        success: function (data) {
+                            data.forEach(teacher => {
+                                teacherSelect.append(
+                                    $('<option></option>').val(teacher.teacherId)
+                                        .text(teacher.fullName)
+                                        .prop('selected', teacher.teacherId == selectedTeacherId)
+                                );
+                            });
+                        },
+                        complete: function () {
+                            teacherSelect.prop('disabled', false);
+                            loadingSpinner?.addClass('d-none');
+                        }
+                    });
+                }
+            }
+
+            $('#subjectSelect').change(function () {
+                loadTeachers($(this).val(), null);
+            });
+
+            loadTeachers($('#subjectSelect').val(), '@Model.TeacherId');
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        body {
+            background: linear-gradient(to right, #dffcff, #c0ebf0);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .custom-title {
+            background: linear-gradient(to right, rgba(6,187,204,1), rgba(6,150,180,1));
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 1rem;
+            font-weight: bold;
+            font-size: 2rem;
+            border: none;
+            box-shadow: none;
+            margin: 0;
+        }
+
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 1.25rem;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: rgba(6,187,204,1);
+                box-shadow: 0 0 0 0.25rem rgba(6,187,204,0.25);
+                outline: none;
+            }
+
+        .btn-submit {
+            border-radius: 2rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: 2px solid rgba(6,187,204,1);
+            background-color: transparent;
+            color: rgba(6,187,204,1);
+            transition: all 0.3s ease;
+        }
+
+            .btn-submit:hover {
+                background-color: rgba(6,187,204,1);
+                color: white;
+            }
+
+        .form-outline {
+            margin-bottom: 1.2rem;
+        }
+    </style>
+}

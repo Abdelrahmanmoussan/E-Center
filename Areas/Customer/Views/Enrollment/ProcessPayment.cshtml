@@ -1,0 +1,100 @@
+﻿ @model IdentityText.Models.Payment 
+
+ @{ 
+     ViewData["Title"] = "تفاصيل الدفع"; 
+ } 
+
+ <h2 class="mb-5 text-primary fw-bold text-center" style="font-size: 2.5rem; letter-spacing: 1px;"> 
+     <i class="fas fa-credit-card me-3"></i>@ViewData["Title"] 
+ </h2> 
+
+ <div class="card shadow-lg border-0 rounded-5 p-5 mx-auto" style="max-width: 600px; background: linear-gradient(135deg, #e0f7fa, #80deea);"> 
+     <dl class="row mb-0"> 
+         <dt class="col-sm-5 text-secondary fs-5">المبلغ المطلوب:</dt> 
+         <dd class="col-sm-7 fs-5 fw-bold text-dark">@Model.Amount.ToString("C")</dd> 
+
+         <dt class="col-sm-5 text-secondary fs-5 mt-4">طريقة الدفع:</dt> 
+         <dd class="col-sm-7 fs-5 fw-semibold text-dark mt-4">@Model.PaymentMethod.ToString()</dd> 
+
+         <dt class="col-sm-5 text-secondary fs-5 mt-4">حالة الدفع:</dt> 
+         <dd class="col-sm-7 fs-5 fw-semibold text-dark mt-4"> 
+             @if (Model.PaymentStatus == IdentityText.Enums.PaymentStatus.Paid) 
+             { 
+                 <span class="badge bg-success px-3 py-2 fs-6"> 
+                     <i class="fas fa-check-circle me-2"></i>تم الدفع 
+                 </span> 
+             } 
+             else if (Model.PaymentStatus == IdentityText.Enums.PaymentStatus.Pending) 
+             { 
+                 <span class="badge bg-warning text-dark px-3 py-2 fs-6"> 
+                     <i class="fas fa-hourglass-half me-2"></i>في الانتظار 
+                 </span> 
+             } 
+             else 
+             { 
+                 <span class="badge bg-secondary px-3 py-2 fs-6"> 
+                     @Model.PaymentStatus.ToString() 
+                 </span> 
+             } 
+         </dd> 
+
+         <dt class="col-sm-5 text-secondary fs-5 mt-4">ملاحظات:</dt> 
+         <dd class="col-sm-7 fs-6 text-muted mt-4">@Model.Notes</dd> 
+     </dl> 
+
+     @if (Model.PaymentStatus == IdentityText.Enums.PaymentStatus.Pending) 
+     { 
+         <form asp-action="ConfirmPayment" method="post" class="mt-5 d-flex justify-content-center"> 
+             <input type="hidden" name="paymentId" value="@Model.PaymentId" /> 
+             <button type="submit" class="btn btn-gradient-primary btn-lg px-5 shadow"> 
+                 <i class="fas fa-check me-2"></i>تأكيد الدفع 
+             </button> 
+         </form> 
+     } 
+     else if (Model.PaymentStatus == IdentityText.Enums.PaymentStatus.Paid) 
+     { 
+         <div class="alert alert-success text-center mt-5 fs-5 fw-semibold rounded-4 shadow-sm"> 
+             <i class="fas fa-thumbs-up me-2"></i>تم تأكيد الدفع بنجاح. شكراً لك! 
+         </div> 
+     } 
+     else 
+     { 
+         <div class="alert alert-warning text-center mt-5 fs-5 fw-semibold rounded-4 shadow-sm"> 
+             <i class="fas fa-info-circle me-2"></i>حالة الدفع: @Model.PaymentStatus.ToString() 
+         </div> 
+     } 
+ </div> 
+
+ <style> 
+     /* زر التدرج اللوني */ 
+     .btn-gradient-primary { 
+         background: linear-gradient(45deg, #007bff, #00d4ff); 
+         color: white; 
+         border: none; 
+         border-radius: 50px; 
+         font-weight: 700; 
+         transition: background 0.4s ease, box-shadow 0.4s ease; 
+         box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4); 
+     } 
+
+         .btn-gradient-primary:hover { 
+             background: linear-gradient(45deg, #0056b3, #00a3cc); 
+             box-shadow: 0 6px 20px rgba(0, 163, 204, 0.6); 
+             color: white; 
+         } 
+
+     dt { 
+         font-weight: 600; 
+     } 
+
+     dd { 
+         margin-bottom: 0; 
+     } 
+
+     /* أيقونات FontAwesome */ 
+     i.fas { 
+         color: #007bff; 
+     } 
+ </style> 
+
+ <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" /> 

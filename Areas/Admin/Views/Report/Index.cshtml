@@ -1,0 +1,90 @@
+﻿@model IEnumerable<IdentityText.Models.Payment>
+@{
+    ViewData["Title"] = "لوحة التقارير";
+}
+
+<h2 class="my-4">📊 لوحة التقارير المالية - <small class="text-muted">@ViewBag.Today</small></h2>
+
+<div class="row text-white mb-4">
+    <div class="col-md-2">
+        <div class="card bg-success rounded-3 shadow">
+            <div class="card-body text-center">
+                <h6>إجمالي الإيرادات</h6>
+                <h4>@ViewBag.TotalRevenue EGP</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card bg-info rounded-3 shadow">
+            <div class="card-body text-center">
+                <h6>مبيعات اليوم</h6>
+                <h4>@ViewBag.TodaySales EGP</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card bg-primary rounded-3 shadow">
+            <div class="card-body text-center">
+                <h6>عدد المدرسين</h6>
+                <h4>@ViewBag.TotalTeachers</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card bg-warning rounded-3 shadow">
+            <div class="card-body text-center">
+                <h6>عدد الطلبة</h6>
+                <h4>@ViewBag.TotalStudents</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card bg-secondary rounded-3 shadow">
+            <div class="card-body text-center">
+                <h6>عدد التسجيلات</h6>
+                <h4>@ViewBag.TotalEnrollments</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between my-3">
+    <h4>تفاصيل المدفوعات</h4>
+    <a asp-action="Create" class="btn btn-success">➕ إضافة دفعة جديدة</a>
+</div>
+
+<table class="table table-bordered table-striped table-hover shadow-sm">
+    <thead class="table-dark">
+        <tr>
+            <th>رقم التسجيل</th>
+            <th>المبلغ</th>
+            <th>تاريخ الدفع</th>
+            <th>طريقة الدفع</th>
+            <th>ملاحظات</th>
+            <th>نسبة المنصة %</th>
+            <th>الصافي للمدرس</th>
+            <th>الحالة</th>
+            <th>إجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Enrollment?.EnrollmentId</td>
+                <td>@item.Amount EGP</td>
+                <td>@item.PaymentDate.ToShortDateString()</td>
+                <td>@item.PaymentMethod</td>
+                <td>@item.Notes</td>
+                <td>@item.PlatformPercentage %</td>
+                <td>@item.NetAmountForTeacher EGP</td>
+                <td>@item.PaymentStatus</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.PaymentId" class="btn btn-sm btn-outline-info">تفاصيل</a>
+                    <a asp-action="Edit" asp-route-id="@item.PaymentId" class="btn btn-sm btn-outline-primary">تعديل</a>
+                    <a asp-action="Delete" asp-route-id="@item.PaymentId" class="btn btn-sm btn-outline-danger">حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

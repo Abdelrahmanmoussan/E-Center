@@ -1,0 +1,298 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<style>
+    /* أحافظ على الخلفية بتاعتك زي ما هي */
+    body {
+        background: linear-gradient(to right, #dffcff, #c0ebf0);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control, .form-select, textarea {
+        border-radius: 1.25rem;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+        .form-control:focus, .form-select:focus, textarea:focus {
+            border-color: rgba(6,187,204,1);
+            box-shadow: 0 0 0 0.25rem rgba(6,187,204,0.25);
+            outline: none;
+        }
+
+    .btn-submit {
+        border-radius: 2rem;
+        padding: 0.75rem 1.5rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+        border: 2px solid rgba(6,187,204,1);
+        background-color: transparent;
+        color: rgba(6,187,204,1);
+        transition: all 0.3s ease;
+    }
+
+        .btn-submit:hover {
+            background-color: rgba(6,187,204,1);
+            color: white;
+        }
+
+    .form-outline {
+        margin-bottom: 1.2rem;
+    }
+
+    h3 {
+        font-weight: bold;
+        color: rgba(6,187,204,1);
+    }
+
+    .form-section-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 1.5rem 0 1rem;
+        color: #004F5A;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 0.5rem;
+    }
+
+    .text-link {
+        color: rgba(6,187,204,1);
+        text-decoration: none;
+    }
+
+        .text-link:hover {
+            text-decoration: underline;
+        }
+
+    .custom-title {
+        background: linear-gradient(to right, rgba(6,187,204,1), rgba(6,150,180,1));
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 1rem;
+        font-weight: bold;
+        font-size: 2rem;
+        border: none;
+        box-shadow: none;
+        margin: 0;
+    }
+
+    .form-select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 0.75rem 1rem;
+        border-radius: 1.25rem;
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='rgba(6,187,204,1)' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 10px 6px;
+    }
+
+</style>
+
+
+
+
+<div class="d-flex justify-content-center my-3">
+    <h1 class="custom-title text-center">
+        Create a New Account
+    </h1>
+</div>
+
+
+<section>
+    <div class="container py-3">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-12 col-lg-6">
+                <div class="card p-4">
+                    <div class="card-body">
+                        @* <h3 class="text-center mb-4">Create a New Account</h3> *@
+                     
+                        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                            <div class="form-outline">
+                                <label asp-for="Input.FirstName" class="form-label">First Name</label>
+                                <input asp-for="Input.FirstName" class="form-control" placeholder="First Name" />
+                                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-outline">
+                                <label asp-for="Input.LastName" class="form-label">Last Name</label>
+                                <input asp-for="Input.LastName" class="form-control" placeholder="Last Name" />
+                                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-outline">
+                                <label asp-for="Input.Email" class="form-label">Email</label>
+                                <input asp-for="Input.Email" class="form-control" placeholder="Email" />
+                                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-outline">
+                                <label asp-for="Input.Password" class="form-label">Password</label>
+                                <input asp-for="Input.Password" type="password" class="form-control" placeholder="Password" />
+                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-outline">
+                                <label asp-for="Input.ConfirmPassword" class="form-label">Confirm Password</label>
+                                <input asp-for="Input.ConfirmPassword" type="password" class="form-control" placeholder="Confirm Password" />
+                                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-outline">
+                                <label asp-for="Input.Address" class="form-label">Address</label>
+                                <input asp-for="Input.Address" class="form-control" placeholder="Address" />
+                                <span asp-validation-for="Input.Address" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-outline">
+                                <label asp-for="Input.Photo" class="form-label">Profile Picture</label>
+                                <input type="file" asp-for="Input.Photo" class="form-control" />
+                                <span asp-validation-for="Input.Photo" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-outline">
+                                <label asp-for="Input.Role" class="form-label">Register As</label>
+                                <select asp-for="Input.Role" class="form-select" id="roleSelector">
+                                    <option value="">Select Role</option>
+                                    <option value="Student">Student</option>
+                                    <option value="Teacher">Teacher</option>
+                                </select>
+                                <span asp-validation-for="Input.Role" class="text-danger"></span>
+                            </div>
+
+                            <!-- Student Fields -->
+                            <div id="studentFields" style="display: none;">
+                                <div class="form-section-title">Student Details</div>
+                                <div class="form-outline">
+                                    <label asp-for="Input.ParentName" class="form-label">Parent Name</label>
+                                    <input asp-for="Input.ParentName" class="form-control" />
+                                    <span asp-validation-for="Input.ParentName" class="text-danger"></span>
+                                </div>
+                                <div class="form-outline">
+                                    <label asp-for="Input.ParentPhone" class="form-label">Parent Phone</label>
+                                    <input asp-for="Input.ParentPhone" class="form-control" />
+                                    <span asp-validation-for="Input.ParentPhone" class="text-danger"></span>
+                                </div>
+                                <div class="form-outline">
+                                    <label asp-for="Input.ParentMail" class="form-label">Parent Email</label>
+                                    <input asp-for="Input.ParentMail" class="form-control" />
+                                    <span asp-validation-for="Input.ParentMail" class="text-danger"></span>
+                                </div>
+                                <div class="form-outline">
+                                    <label asp-for="Input.StudentDB" class="form-label">Date of Birth</label>
+                                    <input asp-for="Input.StudentDB" type="date" class="form-control" />
+                                    <span asp-validation-for="Input.StudentDB" class="text-danger"></span>
+                                </div>
+                                <div class="form-outline">
+                                    <label asp-for="Input.EnrollmentDate" class="form-label">Enrollment Date</label>
+                                    <input asp-for="Input.EnrollmentDate" type="date" class="form-control" />
+                                    <span asp-validation-for="Input.EnrollmentDate" class="text-danger"></span>
+                                </div>
+                                <div class="form-outline">
+                                    <label asp-for="Input.EmergencyContact" class="form-label">Emergency Contact</label>
+                                    <input asp-for="Input.EmergencyContact" class="form-control" />
+                                    <span asp-validation-for="Input.EmergencyContact" class="text-danger"></span>
+                                </div>
+                        
+                                <div class="form-outline">
+                                    <label asp-for="Input.StudentNotes" class="form-label">Notes</label>
+                                    <textarea asp-for="Input.StudentNotes" class="form-control" rows="3"></textarea>
+                                    <span asp-validation-for="Input.StudentNotes" class="text-danger"></span>
+                                </div>
+                                <div class="form-outline">
+                                    <label asp-for="Input.AcademicYearId" class="form-label">Academic Year</label>
+                                    <select asp-for="Input.AcademicYearId" asp-items="Model.Input.AcademicYearsList" class="form-control">
+                                        <option value="">Select Academic Year</option>
+                                    </select>
+                                    <span asp-validation-for="Input.AcademicYearId" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Teacher Fields -->
+                            <div id="teacherFields" style="display: none;">
+                                <div class="form-section-title">Teacher Details</div>
+                                <div class="form-outline">
+                                    <label asp-for="Input.TeacherHireDate" class="form-label">Hire Date</label>
+                                    <input asp-for="Input.TeacherHireDate" type="date" class="form-control" />
+                                    <span asp-validation-for="Input.TeacherHireDate" class="text-danger"></span>
+                                </div>
+                                <div class="form-outline">
+                                    <label asp-for="Input.TeacherDB" class="form-label">Date of Birth</label>
+                                    <input asp-for="Input.TeacherDB" type="date" class="form-control" />
+                                    <span asp-validation-for="Input.TeacherDB" class="text-danger"></span>
+                                </div>
+                                <div class="form-outline">
+                                    <label asp-for="Input.TeacherNetAmount" class="form-label">Net Amount</label>
+                                    <input asp-for="Input.TeacherNetAmount" type="number" step="0.01" class="form-control" />
+                                    <span asp-validation-for="Input.TeacherNetAmount" class="text-danger"></span>
+                                </div>
+                                <div class="form-outline">
+                                    <label asp-for="Input.TeacherNotes" class="form-label">Content/About</label>
+                                    <textarea asp-for="Input.TeacherNotes" class="form-control" rows="3"></textarea>
+                                    <span asp-validation-for="Input.TeacherNotes" class="text-danger"></span>
+                                </div>
+                                <div class="form-outline">
+                                    <label asp-for="Input.SubjectId" class="form-label">Subject</label>
+                                    <select asp-for="Input.SubjectId" asp-items="Model.Input.SubjectsList" class="form-select">
+                                        <option value="">-- Select Subject --</option>
+                                    </select>
+                                    <span asp-validation-for="Input.SubjectId" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-submit w-100 mt-4">Register</button>
+                        </form>
+
+                        <div class="mt-3 text-center">
+                            <a asp-page="./Login" class="text-link">Already have an account? Sign In</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const roleSelector = document.getElementById("roleSelector");
+            const studentFields = document.getElementById("studentFields");
+            const teacherFields = document.getElementById("teacherFields");
+
+            function toggleRoleFields() {
+                const selectedRole = roleSelector.value;
+
+                studentFields.style.display = (selectedRole === "Student") ? "block" : "none";
+                teacherFields.style.display = (selectedRole === "Teacher") ? "block" : "none";
+            }
+
+            if (roleSelector) {
+                roleSelector.addEventListener("change", toggleRoleFields);
+                toggleRoleFields();
+            }
+        });
+    </script>
+}

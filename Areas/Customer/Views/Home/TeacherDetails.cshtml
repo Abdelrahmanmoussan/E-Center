@@ -1,0 +1,171 @@
+﻿@using IdentityText.Models.ViewModel
+@model TeacherDetailsViewModel
+
+@{
+    ViewData["Title"] = "Teacher Details";
+}
+
+<style>
+    body {
+        background: linear-gradient(to right, #f8fdff, #e6f9fb);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .main-title {
+        font-size: 2rem;
+        font-weight: bold;
+        color: rgba(6,187,204,1);
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: rgba(6,187,204,1);
+        margin-bottom: 1rem;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+        .section-title::before,
+        .section-title::after {
+            content: none !important;
+            display: none !important;
+        }
+
+    .card-custom {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        background-color: #fff;
+    }
+
+        .card-custom:hover {
+            transform: scale(1.01);
+            transition: 0.3s ease-in-out;
+        }
+
+    .rounded-circle-border {
+        border: 3px solid rgba(6,187,204,0.6);
+    }
+
+    .btn-outline-primary-custom {
+        color: rgba(6,187,204,1);
+        border-color: rgba(6,187,204,1);
+        border-radius: 50px;
+    }
+
+        .btn-outline-primary-custom:hover {
+            background-color: rgba(6,187,204,1);
+            color: white;
+        }
+
+    .teacher-img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+    }
+</style>
+
+<div class="container py-5">
+
+    <!-- عنوان رئيسي -->
+    <h1 class="main-title">Teacher Details</h1>
+
+    <!-- معلومات المدرس -->
+    <div class="card card-custom p-4">
+        <div class="row align-items-center mb-4">
+            <div class="col-md-2 text-center">
+                <img src="~/images/@Model.Teacher.ApplicationUser.Photo"
+                     alt="@Model.Teacher.ApplicationUser.FirstName"
+                     class="rounded-circle mx-auto d-block"
+                     style="width: 100px; height: 100px; object-fit: cover; border: 3px solid rgba(6,187,204,0.6);" />
+
+
+            </div>
+            <div class="col-md-10">
+                <h2 class="mb-1" style="color: rgba(6,187,204,1); font-weight: bold;">
+                    @Model.Teacher.ApplicationUser.FirstName @Model.Teacher.ApplicationUser.LastName
+                </h2>
+                <p class="text-muted mb-0"><i class="fas fa-envelope me-1"></i> @Model.Teacher.ApplicationUser.Email</p>
+                <p class="text-muted"><i class="fas fa-phone-alt me-1"></i> @Model.Teacher.ApplicationUser.PhoneNumber</p>
+            </div>
+        </div>
+
+        <!-- العنوان الفرعي -->
+        <h4 class="section-title"><i class="fas fa-layer-group me-2"></i> Assigned Class Groups</h4>
+
+        @if (Model.ClassGroups.Any())
+        {
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                @foreach (var classGroup in Model.ClassGroups)
+                {
+                    <div class="col">
+                        <div class="card card-custom h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">
+                                    <i class="fas fa-users me-2"></i> @classGroup.Title
+                                </h5>
+                                <p class="card-text"><strong>Academic Year:</strong> @classGroup.AcademicYear.Name</p>
+                                <p class="card-text"><strong>Subject:</strong> @classGroup.Subject.Title</p>
+                                <p class="card-text"><strong>Start Date:</strong> @classGroup.StartDate.ToString("dd/MM/yyyy")</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning mt-3">
+                <i class="fas fa-exclamation-circle me-1"></i> This teacher is not assigned to any class groups.
+            </div>
+        }
+    </div>
+
+    <!-- المدرسين المرتبطين -->
+    <div class="mt-5">
+        <h4 class="section-title text-center"><i class="fas fa-user-friends me-2"></i> Related Teachers</h4>
+
+        @{
+            var relatedTeachers = ViewBag.relatedTeachers as List<IdentityText.Models.Teacher>;
+        }
+
+        @if (relatedTeachers != null && relatedTeachers.Any())
+        {
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                @foreach (var related in relatedTeachers)
+                {
+                    <div class="col">
+                        <div class="card card-custom h-100 text-center p-3">
+                            <img src="~/images/@(string.IsNullOrEmpty(related.ApplicationUser.Photo) ? "default.png" : related.ApplicationUser.Photo)"
+                                 alt="@related.ApplicationUser.FirstName"
+                                 class="rounded-circle mx-auto mb-3 rounded-circle-border"
+                                 style="width: 80px; height: 80px; object-fit: cover;" />
+                            <h6 class="card-title mb-1">@related.ApplicationUser.FirstName @related.ApplicationUser.LastName</h6>
+                            <p class="text-muted small mb-2">@related.ApplicationUser.Email</p>
+                            <a asp-area="Customer"
+                               asp-controller="Home"
+                               asp-action="TeacherDetails"
+                               asp-route-TeacherId="@related.TeacherId"
+                               class="btn btn-sm btn-outline-primary-custom px-3">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info text-center mt-3">
+                <i class="fas fa-info-circle me-1"></i> No related teachers to show.
+            </div>
+        }
+    </div>
+</div>
+
+<!-- FontAwesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />

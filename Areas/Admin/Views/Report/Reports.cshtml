@@ -1,0 +1,103 @@
+﻿@model PaymentsReportViewModel
+@using IdentityText.Models.ViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "تقرير المدفوعات";
+}
+
+<h2 class="mb-4">تقرير المدفوعات</h2>
+
+<form asp-action="Reports" method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <label for="teacherId" class="form-label">اختر المدرس</label>
+        @Html.DropDownList("teacherId", (SelectList)ViewBag.Teachers, "جميع المدرسين", new { @class = "form-select" })
+    </div>
+    <div class="col-md-3">
+        <label for="from" class="form-label">من تاريخ</label>
+        <input type="date" name="from" class="form-control" value="@Context.Request.Query["from"]" />
+    </div>
+    <div class="col-md-3">
+        <label for="to" class="form-label">إلى تاريخ</label>
+        <input type="date" name="to" class="form-control" value="@Context.Request.Query["to"]" />
+    </div>
+    <div class="col-md-2 align-self-end">
+        <button type="submit" class="btn btn-primary w-100">فلترة</button>
+    </div>
+</form>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">إجمالي الإيرادات</h5>
+                <p class="card-text">@Model.TotalRevenue.ToString("C")</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title">صافي للمدرس</h5>
+                <p class="card-text">@Model.NetAmountForTeacher.ToString("C")</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title">عدد الطلاب</h5>
+                <p class="card-text">@Model.TotalStudents</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-secondary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">المدفوعات</h5>
+                <p class="card-text">مدفوعة: @Model.PaidCount | معلقة: @Model.PendingCount | فاشلة: @Model.FailedCount | ملغاة: @Model.CancelledCount</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4>تفاصيل المدفوعات</h4>
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>اسم الطالب</th>
+            <th>المبلغ</th>
+            <th>صافي للمدرس</th>
+            <th>تاريخ الدفع</th>
+            <th>طريقة الدفع</th>
+            <th>الحالة</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Payments.Any())
+        {
+            int i = 1;
+            foreach (var payment in Model.Payments)
+            {
+                <tr>
+                    <td>@(i++)</td>
+                    <td>@payment.Enrollment?.Student?.FullName</td>
+                    <td>@payment.Amount.ToString("C")</td>
+                    <td>@payment.NetAmountForTeacher.ToString("C")</td>
+                    <td>@payment.PaymentDate.ToString("dd/MM/yyyy")</td>
+                    <td>@payment.PaymentMethod</td>
+                    <td>@payment.PaymentStatus</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7" class="text-center">
+                    "No data available to display."
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

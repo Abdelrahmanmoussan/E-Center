@@ -1,0 +1,154 @@
+﻿@model IdentityText.Models.ViewModel.StudentAttendanceVM
+
+<div class="container mt-4">
+    <!-- عنوان -->
+    <div class="chart-header mb-4 rounded-3 shadow-sm d-flex justify-content-center align-items-center text-warning">
+        <i class="bi bi-check2-square me-2"></i> Student Attendance
+    </div>
+
+    <div class="form-container p-4 rounded-3 shadow-sm bg-white">
+        <form asp-action="SaveAttendance" method="post">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="ClassGroupId" class="form-label fw-semibold">Select Class Group</label>
+                    <select asp-for="ClassGroupId" asp-items="Model.ClassGroups" class="form-select rounded-pill" id="ClassGroupId">
+                        <option value="">-- Select Class Group --</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="LectureId" class="form-label fw-semibold">Select Lecture</label>
+                    <select asp-for="LectureId" asp-items="Model.Lectures" class="form-select rounded-pill" id="LectureId">
+                        <option value="">-- Select Lecture --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="studentsSection" style="display: none;">
+                <div class="table-wrapper rounded-3 overflow-hidden shadow-sm mt-4">
+                    <table class="table table-bordered table-hover align-middle text-center mb-0">
+                        <thead class="gradient-header">
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Remark</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-outline-success px-5 rounded-pill shadow-sm">
+                    <i class="bi bi-save me-1"></i> Save Attendance
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#ClassGroupId').change(function () {
+                const classGroupId = $(this).val();
+                $('#LectureId').empty().append('<option value="">-- Select Lecture --</option>');
+                $('#studentsSection').hide();
+
+                if (classGroupId) {
+                    $.get('/Admin/Attendance/GetLecturesByClassGroup?classGroupId=' + classGroupId, function (data) {
+                        $.each(data, function (i, lecture) {
+                            $('#LectureId').append('<option value="' + lecture.id + '">' + lecture.title + '</option>');
+                        });
+                    });
+                }
+            });
+
+            $('#LectureId').change(function () {
+                const classGroupId = $('#ClassGroupId').val();
+                const lectureId = $(this).val();
+
+                if (classGroupId && lectureId) {
+                    $.get('/Admin/Attendance/GetStudentsByClassGroup?classGroupId=' + classGroupId, function (data) {
+                        const tableBody = $('table tbody');
+                        tableBody.empty();
+
+                        if (data.length === 0) {
+                            tableBody.append('<tr><td colspan="5" class="text-danger">No students in this group.</td></tr>');
+                        } else {
+                            $.each(data, function (i, student) {
+                                tableBody.append(`
+                                    <tr>
+                                        <td>${i + 1}</td>
+                                        <td>${student.fullName}</td>
+                                        <td>${student.email}</td>
+                                        <td>
+                                            <select name="Attendances[${i}].AttendanceStatus" class="form-select rounded-pill">
+                                                <option value="Present">Present</option>
+                                                <option value="Absent">Absent</option>
+                                                <option value="Late">Late</option>
+                                            </select>
+                                            <input type="hidden" name="Attendances[${i}].StudentId" value="${student.id}" />
+                                        </td>
+                                        <td><input type="text" name="Attendances[${i}].Remark" class="form-control rounded-pill" /></td>
+                                    </tr>
+                                `);
+                            });
+                        }
+
+                        $('#studentsSection').show();
+                    });
+                } else {
+                    $('#studentsSection').hide();
+                }
+            });
+        });
+    </script>
+}
+
+<style>
+    .chart-header {
+        background: linear-gradient(to bottom, #1d3557, #447a9c);
+        padding: 12px 20px;
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+
+    .gradient-header th {
+        background: linear-gradient(to bottom, #1d3557, #447a9c);
+        color: gold;
+        font-weight: bold;
+        vertical-align: middle;
+        height: 60px;
+    }
+
+    .form-container {
+        background-color: #ffffff;
+        border-radius: 12px;
+    }
+
+    .form-select,
+    .form-control {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .table-wrapper {
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .table th,
+    .table td {
+        vertical-align: middle;
+    }
+
+    .btn i {
+        margin-right: 4px;
+    }
+</style>

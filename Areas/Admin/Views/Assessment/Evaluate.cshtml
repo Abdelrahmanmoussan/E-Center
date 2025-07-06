@@ -1,0 +1,71 @@
+﻿@using IdentityText.Utility
+@model IdentityText.Models.ViewModel.StudentSolutionVM
+
+<!-- العنوان -->
+<div class="chart-header mb-4 rounded-3 shadow-sm d-flex justify-content-center align-items-center text-light">
+    <i class="bi bi-clipboard-check me-2"></i> Evaluate Student Solution
+</div>
+
+<div class="container">
+    <div class="mb-4">
+        <p><strong>Student:</strong> @Model.StudentName</p>
+        <p><strong>Solution:</strong> <a href="~/AssessmentFile/@Model.SolutionLink" target="_blank" class="btn btn-sm btn-info rounded-pill">Open File</a></p>
+
+        @if (Model.Score.HasValue)
+        {
+            <p><strong>Suggested Grade:</strong> <span class="badge bg-secondary">@GradeHelper.GetGrade(Model.Score.Value, ViewBag.MaxScore)</span></p>
+        }
+    </div>
+
+    <form asp-action="Evaluate" method="post">
+        <input type="hidden" asp-for="AssessmentResultId" />
+
+        <div class="mb-3">
+            <label asp-for="Score" class="form-label fw-bold"></label>
+            <input asp-for="Score" class="form-control rounded-pill" min="0" max="@ViewBag.MaxScore" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Feedback" class="form-label fw-bold"></label>
+            <textarea asp-for="Feedback" class="form-control rounded-3" rows="4"></textarea>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-outline-success px-5 rounded-pill shadow-sm">
+                <i class="bi bi-check-circle me-1"></i> Save Evaluation
+            </button>
+        </div>
+    </form>
+</div>
+<style>
+    .chart-header {
+        background: linear-gradient(to right, #1d3557, #447a9c);
+        padding: 12px 20px;
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+
+    .gradient-header th {
+        background: linear-gradient(to right, #1d3557, #447a9c);
+        color: white;
+        text-align: center;
+        vertical-align: middle;
+        height: 60px;
+        font-weight: bold;
+    }
+
+    .table-wrapper {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #dee2e6;
+        margin-bottom: 2rem;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    .btn-sm i {
+        margin-right: 4px;
+    }
+</style>

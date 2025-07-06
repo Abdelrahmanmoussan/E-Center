@@ -1,0 +1,306 @@
+﻿@using IdentityText.Models.ViewModel
+@model PaymentsReportViewModel
+@{
+    ViewData["Title"] = "تقرير المدفوعات";
+}
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    <style>
+        .card-hover {
+            transition: 0.3s ease;
+        }
+
+            .card-hover:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            }
+
+        .stats-card {
+            border-left: 5px solid #0d6efd;
+            background: #f8f9fa;
+            border-radius: 0.5rem;
+        }
+
+            .stats-card .card-body {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .stats-card i {
+                font-size: 2rem;
+                opacity: 0.7;
+            }
+
+        .stats-text {
+            text-align: end;
+        }
+
+            .stats-text h6 {
+                font-size: 0.9rem;
+                color: #6c757d;
+                margin-bottom: 0;
+            }
+
+            .stats-text h4 {
+                margin: 0;
+                font-weight: bold;
+            }
+
+        .chart-header {
+            background: linear-gradient(to bottom, #1d3557, #447a9c);
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: bold;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+
+        table th,
+        table td {
+            vertical-align: middle !important;
+        }
+
+        .table th {
+            white-space: nowrap;
+        }
+
+        canvas {
+            max-height: 240px;
+        }
+
+        .tools-buttons {
+            text-align: end;
+            margin-bottom: 1rem;
+        }
+
+            .tools-buttons .btn {
+                margin-left: 5px;
+            }
+    </style>
+}
+
+<div class="container-fluid py-4">
+    <h1 class="text-primary fw-bold mb-4">
+        <i class="bi bi-receipt me-2"></i>تقرير المدفوعات
+    </h1>
+
+    <!-- فلترة التقرير -->
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-md-4">
+            <label for="teacherId" class="form-label">اسم المدرس</label>
+            @Html.DropDownList("teacherId", ViewBag.Teachers as SelectList, "كل المدرسين", new { @class = "form-control" })
+        </div>
+        <div class="col-md-3">
+            <label for="from" class="form-label">من تاريخ</label>
+            <input type="date" class="form-control" name="from" value="@Context.Request.Query["from"]" />
+        </div>
+        <div class="col-md-3">
+            <label for="to" class="form-label">إلى تاريخ</label>
+            <input type="date" class="form-control" name="to" value="@Context.Request.Query["to"]" />
+        </div>
+        <div class="col-md-2 align-self-end">
+            <button type="submit" class="btn btn-primary w-100">تصفية</button>
+        </div>
+    </form>
+
+    @if (Model.Payments?.Any() == true)
+    {
+        <!-- أدوات التقرير -->
+        <div class="tools-buttons">
+            <button onclick="window.print()" class="btn btn-outline-dark"><i class="bi bi-printer-fill"></i> طباعة</button>
+            <button id="downloadPdf" class="btn btn-outline-danger"><i class="bi bi-file-earmark-pdf"></i> تحميل PDF</button>
+        </div>
+
+        <!-- بطاقات الإحصائيات -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card stats-card card-hover shadow-sm border-0 border-start border-primary">
+                    <div class="card-body">
+                        <i class="bi bi-cash-coin text-warning"></i>
+                        <div class="stats-text">
+                            <h6>إجمالي الإيرادات</h6>
+                            <h4>@Model.TotalRevenue.ToString("C")</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card card-hover shadow-sm border-0 border-start border-success">
+                    <div class="card-body">
+                        <i class="bi bi-wallet-fill text-success"></i>
+                        <div class="stats-text">
+                            <h6>صافي للمعلم</h6>
+                            <h4>@Model.NetAmountForTeacher.ToString("C")</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card card-hover shadow-sm border-0 border-start border-danger">
+                    <div class="card-body">
+                        <i class="bi bi-bank text-danger"></i>
+                        <div class="stats-text">
+                            <h6>صافي للسنتر</h6>
+                            <h4>@Model.NetAmountForCenter.ToString("C")</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card card-hover shadow-sm border-0 border-start border-info">
+                    <div class="card-body">
+                        <i class="bi bi-people-fill text-primary"></i>
+                        <div class="stats-text">
+                            <h6>عدد الطلاب</h6>
+                            <h4>@Model.TotalStudents</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- جدول المدفوعات -->
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered text-center" id="paymentsTable">
+                <thead class="table-dark">
+                    <tr>
+                        <th>اسم الطالب</th>
+                        <th>المبلغ</th>
+                        <th>صافي للمعلم</th>
+                        <th>تاريخ الدفع</th>
+                        <th>حالة الدفع</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var payment in Model.Payments)
+                    {
+                        var status = payment.PaymentStatus.ToString();
+                        var badgeClass = status switch
+                        {
+                            "Paid" => "success",
+                            "Pending" => "warning",
+                            "Failed" => "danger",
+                            "Cancelled" => "secondary",
+                            _ => "dark"
+                        };
+
+                        <tr>
+                            <td>@payment.Enrollment.Student.FullName</td>
+                            <td>@payment.Amount.ToString("C")</td>
+                            <td>@payment.NetAmountForTeacher.ToString("C")</td>
+                            <td>@payment.PaymentDate.ToString("yyyy-MM-dd")</td>
+                            <td><span class="badge bg-@badgeClass">@status</span></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+
+        <!-- الرسوم البيانية -->
+        <div class="row g-4 mt-4">
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0">
+                    <div class="chart-header"><i class="bi bi-pie-chart-fill me-2"></i> توزيع حالات الدفع </div>
+                    <div class="card-body">
+                        <canvas id="paymentStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0">
+                    <div class="chart-header"><i class="bi bi-bar-chart-fill me-2"></i> مقارنة الإيرادات </div>
+                    <div class="card-body">
+                        <canvas id="revenueComparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center">لا توجد نتائج لعرضها.</div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+
+
+    <script>
+        // جدول DataTable
+        $(document).ready(function () {
+            $('#paymentsTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json"
+                }
+            });
+        });
+
+        const chartConfig1 = {
+            type: 'doughnut',
+            data: {
+                labels: ['مدفوع', 'معلق', 'فشل', 'ملغي'],
+                datasets: [{
+                    data: [@Model.PaidCount, @Model.PendingCount, @Model.FailedCount, @Model.CancelledCount],
+                    backgroundColor: ['#28a745', '#ffc107', '#dc3545', '#6c757d']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        };
+
+        const chartConfig2 = {
+            type: 'bar',
+            data: {
+                labels: ['إجمالي الإيرادات', 'صافي المعلم', 'صافي السنتر'],
+                datasets: [{
+                    label: 'المبالغ',
+                    data: [@Model.TotalRevenue, @Model.NetAmountForTeacher, @Model.NetAmountForCenter],
+                    backgroundColor: ['#0d6efd', '#198754', '#fd7e14']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        };
+
+        new Chart(document.getElementById('paymentStatusChart'), chartConfig1);
+        new Chart(document.getElementById('revenueComparisonChart'), chartConfig2);
+
+
+        // تحميل PDF
+        document.getElementById("downloadPdf").addEventListener("click", function () {
+            const target = document.querySelector(".container-fluid");
+
+            html2canvas(target, { scale: 2 }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save("تقرير-المدفوعات.pdf");
+            });
+        });
+
+
+    </script>
+}

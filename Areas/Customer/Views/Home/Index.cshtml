@@ -1,0 +1,222 @@
+﻿@using IdentityText.ViewModel.View
+
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!-- Owl Carousel CSS -->
+<link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+<link href="~/lib/owlcarousel/assets/owl.theme.default.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Owl Carousel JS (بعد jQuery) -->
+<script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
+
+
+
+
+<!-- Header Start (Static Image with Text) -->
+<div class="container-fluid p-0 mb-5">
+    <div class="position-relative">
+        <img class="img-fluid w-100" src="~/PIC-1.jpg" style="height: 600px; object-fit: cover;" alt="Header Image">
+        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(24, 29, 56, 0.7);">
+            <div class="container">
+                <div class="row justify-content-start">
+                    <div class="col-sm-10 col-lg-8">
+                        <h5 class="text-primary text-uppercase mb-4 fw-bold" style="font-size: 5rem; letter-spacing: 0.5rem;">WELCOME</h5>
+
+                        <h1 class="display-3 text-white"></h1>
+                        <h1 class="display-4 text-white fw-bold animated slideInDown">
+                            All Your Classes In One Place.
+                        </h1>
+                        <h1> </h1>
+                        <p class="fs-5 text-white mb-4 pb-2 animated slideInUp">
+                            Check your schedule, book lessons, and stay updated — all from your student dashboard. With E-Center, you focus on learning while we handle the rest.
+                        </p>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Header End -->
+<!-- Courses Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h6 class="section-title bg-white text-center text-primary px-3">Courses</h6>
+            <h1 class="mb-5">Popular Courses</h1>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            @foreach (var course in Model.PopularClassGroups)
+            {
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="course-item bg-light rounded-4 shadow-sm overflow-hidden">
+                        <div class="position-relative overflow-hidden">
+                            <img class="img-fluid" src="~/Math2.webp" alt="Course Image"> <!-- حط صورة افتراضية أو ديناميكية هنا -->
+                            <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                                @* <a href="Customer/ClassGroup/Details/@course.ClassGroupId" class="flex-shrink-0 btn btn-sm btn-outline-primary px-3 border-end" style="border-radius: 30px 0 0 30px;">View</a> *@
+                                <a href="Customer/ClassGroup/Details/@course.ClassGroupId" class="flex-shrink-0 btn btn-sm btn-primary px-3" style="border-radius:30px">Join Now</a>
+                            </div>
+                        </div>
+
+                        <div class="text-center p-4 pb-0">
+                            <h3 class="mb-4">@course.Title</h3>
+                            <h5 class="mb-0">@course.Price EGP</h5>
+                            <div class="mb-3">
+                                <small class="fa fa-book text-primary me-1"></small>
+                                <small>@course.Subject.Title</small>
+                                <br />
+                                <small class="fa fa-calendar-alt text-primary me-1"></small>
+                                <small>@course.AcademicYear.Name</small>
+                            </div>
+                            
+                        </div>
+
+                        <div class="d-flex border-top">
+                            <small class="flex-fill text-center border-end py-2">
+								<i class="fa fa-user-tie text-primary me-2"></i> 
+                                @course.Teacher.ApplicationUser.FirstName
+                                @course.Teacher.ApplicationUser.LastName
+                            </small>
+                            <small class ="flex-fill text-center border-end py-2">
+                                <i class="fa fa-clock text-primary me-2"></i>
+                                @{
+                                    var days = (course.EndDate - course.StartDate).TotalDays;
+                                    var totalWeeks = days / 7;
+                                    var totalLectures = (int)Math.Floor(totalWeeks * 2);
+                                }
+                                @totalLectures Lectures (Days: @days)
+                            </small>
+
+                                 
+                            <small class="flex-fill text-center py-2">
+                                <i class="fa fa-user text-primary me-2"></i> @course.Enrollments?.Count()
+								<br />
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!-- Courses End -->
+
+
+
+
+<!-- Team Start -->
+<!-- Team Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h6 class="section-title bg-white text-center text-primary px-3">Instructors</h6>
+            <h1 class="mb-5">Expert Instructors</h1>
+        </div>
+        <div class="row g-4">
+            @foreach (var teacher in Model.PopularTeachers)
+            {
+                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="team-item bg-light">
+                        <div class="overflow-hidden">
+                            <img class="img-fluid" src="/images/@teacher.ApplicationUser.Photo" alt="@teacher.ApplicationUser.FirstName">
+                        </div>
+                        <div class="position-relative d-flex justify-content-center" style="margin-top: -23px;">
+                            <div class="bg-light d-flex justify-content-center pt-2 px-1">
+                                <a class="btn btn-sm-square btn-primary mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-sm-square btn-primary mx-1" href="#"><i class="fab fa-twitter"></i></a>
+                                <a class="btn btn-sm-square btn-primary mx-1" href="#"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                        <div class="text-center p-4">
+                            <h5 class="mb-0">
+                                <a asp-area="Customer" asp-controller="Home" asp-action="TeacherDetails" asp-route-TeacherId="@teacher.TeacherId" class="text-dark text-decoration-none">
+                                    @teacher.ApplicationUser.FirstName @teacher.ApplicationUser.LastName
+                                </a>
+                            </h5>
+                            <span class="badge bg-primary-subtle text-primary fw-normal px-3 py-2 rounded-pill mt-2 fs-6">
+                                @teacher.Subject.Title
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!-- Team End -->
+<!-- Team End -->
+
+
+
+
+
+
+<!-- راء الطلاب Start -->
+<div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+    <div class="container">
+        <div class="text-center">
+            <h6 class="section-title bg-white text-center text-primary px-3">Testimonials</h6>
+            <h1 class="mb-5">What Our Students Say</h1>
+        </div>
+        <div class="owl-carousel testimonial-carousel position-relative">
+            <div class="testimonial-item text-center">
+                <img class="border rounded-circle p-2 mx-auto mb-3" src="/images/testimonial-1.jpg" style="width: 80px; height: 80px;">
+                <h5 class="mb-0">Ahmed Abdelrahman</h5>
+                <p>High School Student</p>
+                <div class="testimonial-text bg-light text-center p-4">
+                    <p class="mb-0">Honestly, the instructors are amazing. Their explanation is simple and clear. I really improved!</p>
+                </div>
+            </div>
+
+            <div class="testimonial-item text-center">
+                <img class="border rounded-circle p-2 mx-auto mb-3" src="/images/testimonial-2.jpg" style="width: 80px; height: 80px;">
+                <h5 class="mb-0">Sara Mohamed</h5>
+                <p>University Student</p>
+                <div class="testimonial-text bg-light text-center p-4">
+                    <p class="mb-0">I struggled with math before, but now everything makes sense thanks to the great teacher.</p>
+                </div>
+            </div>
+
+            <div class="testimonial-item text-center">
+                <img class="border rounded-circle p-2 mx-auto mb-3" src="/images/testimonial-3.jpg" style="width: 80px; height: 80px;">
+                <h5 class="mb-0">Mahmoud Gamal</h5>
+                <p>Thanaweya Amma Student</p>
+                <div class="testimonial-text bg-light text-center p-4">
+                    <p class="mb-0">This platform helped me a lot, especially with organizing my study time. Thank you!</p>
+                </div>
+            </div>
+
+            <div class="testimonial-item text-center">
+                <img class="border rounded-circle p-2 mx-auto mb-3" src="/images/testimonial-4.jpg" style="width: 80px; height: 80px;">
+                <h5 class="mb-0">Menna Allah Aly</h5>
+                <p>Preparatory Student</p>
+                <div class="testimonial-text bg-light text-center p-4">
+                    <p class="mb-0">I love how they explain things and the reviews before exams really helped. Amazing platform!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- راء الطلاب End -->
+
+  @section Scripts {
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            toastr.error('@TempData["Error"]', 'Rejected');
+        </script>
+    }
+    @if (TempData["notification"] != null)
+    {
+        <script>
+            toastr.success('@TempData["notification"]');
+        </script>
+    }
+
+
+  }

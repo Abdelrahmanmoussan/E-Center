@@ -1,0 +1,79 @@
+﻿@using IdentityText.Models.ViewModel
+@model StudentsReportViewModel
+@{
+    ViewData["Title"] = "تقرير الطلاب";
+}
+
+<h2 class="text-center mb-4">تقرير الطلاب</h2>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">إجمالي الطلاب</h5>
+                <p class="card-text display-6">@Model.TotalStudents</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">الطلاب النشطين</h5>
+                <p class="card-text display-6">@Model.ActiveStudents</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-body">
+                <h5 class="card-title">الطلاب غير النشطين</h5>
+                <p class="card-text display-6">@Model.InactiveStudents</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>#</th>
+            <th>الاسم</th>
+            <th>البريد الإلكتروني</th>
+            <th>رقم الهاتف</th>
+            <th>تاريخ التسجيل</th>
+            <th>الحالة</th>
+            <th>عدد الكورسات</th>
+            <th>عدد المدرسين</th>
+            <th>إجمالي المدفوع</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var student in Model.Students)
+        {
+            <tr>
+                <td>@student.StudentId</td>
+                <td>@student.FullName</td>
+                <td>@student.Email</td>
+                <td>@student.Phone</td>
+                <td>@student.RegistrationDate.ToShortDateString()</td>
+                <td>
+                    @if (student.IsActive)
+                    {
+                        <span class="badge bg-success">نشط</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">غير نشط</span>
+                    }
+                </td>
+                <td>@student.CoursesCount</td>
+                <td>@student.TeachersCount</td>
+                <td>@student.TotalPaid.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <!-- ممكن تضيف تشارت لاحقًا هنا -->
+}

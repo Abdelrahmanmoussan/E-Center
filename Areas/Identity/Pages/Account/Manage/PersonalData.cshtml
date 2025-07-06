@@ -1,0 +1,111 @@
+﻿@page
+@model PersonalDataModel
+@{
+    ViewData["Title"] = "Personal Data";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        background: linear-gradient(to right, #dffcff, #c0ebf0);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container-fluid.p-0 {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .profile-card {
+        background-color: white;
+        width: 100%;
+        min-height: auto;
+        padding: 30px 20px;
+        margin: 0;
+        box-sizing: border-box;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .btn-outline-custom {
+        background-color: transparent;
+        color: rgba(6,187,204,1);
+        border: 2px solid rgba(6,187,204,1);
+        border-radius: 50px;
+        padding: 10px 30px;
+        font-weight: bold;
+        transition: 0.3s ease;
+        width: 100%;
+        font-size: 1.1rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+        .btn-outline-custom:hover {
+            background-color: rgba(6,187,204,1);
+            color: white;
+        }
+
+    .btn-outline-danger {
+        background-color: transparent;
+        color: #dc3545;
+        border: 2px solid #dc3545;
+        border-radius: 50px;
+        padding: 10px 30px;
+        font-weight: bold;
+        transition: 0.3s ease;
+        width: 100%;
+        font-size: 1.1rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+    .text-danger {
+        font-size: 0.9rem;
+        color: #dc3545 !important;
+        font-weight: bold;
+    }
+</style>
+
+<div class="container-fluid p-0">
+    <div class="profile-card">
+        <h2 class="text-center mb-4" style="color: rgba(6,187,204,1); font-weight: bold;">@ViewData["Title"]</h2>
+
+        <p>Your account contains personal data that you have given us. This page allows you to download or delete that data.</p>
+        <p class="text-danger">
+            ⚠ Deleting this data will permanently remove your account, and this cannot be recovered.
+
+        </p>
+
+        <form id="download-data" asp-page="DownloadPersonalData" method="post" class="mb-3">
+            <button class="btn-outline-custom" type="submit">
+                <i class="bi bi-download me-2"></i> Download
+            </button>
+        </form>
+
+        <form asp-page="DeletePersonalData" method="post">
+            <button class="btn-outline-danger" type="submit">
+                <i class="bi bi-trash me-2"></i> Delete
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

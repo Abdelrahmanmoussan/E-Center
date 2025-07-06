@@ -1,0 +1,248 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - E Center Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Bootstrap + Icons + Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+    <style>
+        body {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f4f6f9;
+        }
+
+        .sidebar {
+        width: 250px;
+        min-height: 100vh;
+        background: linear-gradient(180deg, #1d3557, #457b9d);
+        color: white;
+        padding: 20px;
+        }
+
+        .sidebar a {
+        text-decoration: none;
+        padding: 10px 0;
+        display: block;
+        font-size: 15px;
+        transition: 0.3s;
+        }
+
+        .sidebar .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        padding-left: 12px;
+        border-radius: 4px;
+        }
+
+        .sidebar .collapse .nav-link {
+        font-size: 14px;
+        padding-left: 20px;
+        }
+
+        .profile {
+        text-align: center;
+        margin-bottom: 20px;
+        }
+
+        .profile img {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        object-fit: cover;
+        }
+
+        .profile-info h6 {
+        margin: 10px 0 0;
+        font-weight: bold;
+        }
+
+        .main-content {
+        flex-grow: 1;
+        padding: 30px;
+        animation: fadeInUp 0.5s ease-in-out;
+        }
+
+        .header {
+        background-color: #fff;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .header .user-info img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        }
+
+        @@keyframes fadeInUp {
+        from {
+        opacity: 0;
+        transform: translateY(20px);
+        }
+
+        to {
+        opacity: 1;
+        transform: translateY(0);
+        }
+        }
+    </style>
+
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    @{
+        var currentUser = await UserManager.GetUserAsync(User);
+        var profileImagePath = string.IsNullOrEmpty(currentUser?.Photo) ? "/images/default-avatar.jpg" : $"/images/{currentUser.Photo}";
+    }
+
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <a href="/Admin/Home" class="navbar-brand d-flex align-items-center text-center text-white fs-4 fw-bold">
+                <h2 class="m-0"><i class="fa fa-book me-3"></i>E-Center</h2>
+            </a>
+            <br><br>
+            <div class="profile text-center mb-4">
+                <img src="@profileImagePath" alt="User profile picture" class="rounded-circle mb-2" width="70" height="70" />
+                <div class="profile-info text-white">
+                    <h6 class="mb-0">@User.Identity?.Name </h6>
+                    <small>@(SignInManager.IsSignedIn(User) ? "System Manager" : "Visitor")</small>
+                </div>
+            </div>
+
+            <nav class="nav flex-column">
+                <a href="/Admin/Home" class="nav-link text-white">🏠 Dashboard</a>
+
+                <!-- Models Menu -->
+                <a class="nav-link text-white d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#modelsMenu" role="button">
+                    📦 Models
+                    <i class="fas fa-chevron-down small"></i>
+                </a>
+
+                <div class="collapse ps-3" id="modelsMenu">
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a class="nav-link text-white-50" href="/Admin/User">👤 Users</a>
+                        <a class="nav-link text-white-50" href="/Admin/Subject">📘 Subjects</a>
+                        <a class="nav-link text-white-50" href="/Admin/AcademicYear">📅 Academic Year</a>
+                        <a class="nav-link text-white-50" href="/Admin/ClassGroup">🏫 Class Groups</a>
+                    }
+                    @if (User.IsInRole("Teacher"))
+                    { 
+                       <a class="nav-link text-white-50" href="/Admin/Lecture">🎤 Lectures</a>
+
+                    }
+                    <a class="nav-link text-white d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#attendanceMenu" role="button">
+                        📝 Attendance
+                        <i class="fas fa-chevron-down small"></i>
+                    </a>
+                    <div class="collapse ps-3" id="attendanceMenu">
+                        @if (User.IsInRole("Teacher"))
+                        {
+                            <a class="nav-link text-white-50" href="/Admin/Attendance/TakeAttendance">📍 Take Attendance</a>
+                            <a class="nav-link text-white-50" href="/Admin/Attendance/ShowAttendance">📊 Attendance History</a>
+                            <a class="nav-link text-white-50" href="/Admin/Attendance/AbsenceSummary">📊 Absence Summary</a>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a class="nav-link text-white-50" href="/Admin/Attendance/ShowAttendance">📊 Attendance History</a>
+                        }
+                    </div>
+                    @if (User.IsInRole("Teacher"))
+                    {
+                        <a class="nav-link text-white-50" href="/Admin/Assessment">🧪 Assessments</a>
+                    }
+
+                    <a class="nav-link text-white-50" href="/Admin/PrivateLesson">📚 Private Lesson</a>
+                </div>
+
+                <!-- Reports Menu -->
+                <a class="nav-link text-white d-flex justify-content-between align-items-center mt-2" data-bs-toggle="collapse" data-bs-target="#reportsMenu" role="button">
+                    📈 Reports
+                    <i class="fas fa-chevron-down small"></i>
+                </a>
+                <div class="collapse ps-3" id="reportsMenu">
+                    <a class="nav-link text-white-50" href="/Admin/Report/PaymentsReport">💰 Payments Report</a>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-grow-1">
+            <!-- Header -->
+            <div class="header d-flex justify-content-between align-items-center px-4 py-2 shadow-sm bg-white border-bottom" style="height: 70px;">
+                <!-- Left: Title -->
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-speedometer2 text-primary fs-4"></i>
+                    <div class="fs-5 fw-semibold text-dark">@ViewData["Title"]</div>
+                </div>
+
+                <!-- Right: User Info -->
+                <div class="user-info d-flex align-items-center gap-3">
+
+                    <a href="/Customer/Home" class="nav-link text-black fw-bold">
+                        <i class="bi bi-house-door-fill me-1"></i> Customer Page
+                    </a>
+
+
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <img src="@profileImagePath" alt="User" class="rounded-circle shadow-sm" width="42" height="42" style="object-fit: cover;" />
+
+                        <div class="dropdown">
+                            <a class="dropdown-toggle text-dark fw-medium text-decoration-none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                @User.Identity?.Name
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm animate__animated animate__fadeIn">
+                                <li>
+                                    <a class="dropdown-item" href="/Identity/Account/Manage"><i class="bi bi-person-circle me-2"></i> Profile</a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")" method="post">
+                                        <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right me-2"></i> Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a class="btn btn-outline-primary me-2" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                        <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                    }
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <div class="main-content">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

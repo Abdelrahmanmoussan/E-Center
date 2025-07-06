@@ -1,0 +1,157 @@
+﻿@model IdentityText.Models.ViewModel.ClassGroupVM
+
+@{
+    ViewData["Title"] = "Create Class Group";
+}
+
+
+
+<!-- نموذج الإدخال -->
+<div class="row">
+    <div class="col-md-6">
+        <!-- عنوان الصفحة -->
+        <div class="chart-header mb-4 rounded-3 shadow-sm d-flex justify-content-center align-items-center text-warning">
+            <i class="bi bi-people-fill me-2"></i> Create New Class Group
+        </div>
+        <div class="form-container p-4 rounded-3 shadow-sm bg-white">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control rounded-pill" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Location" class="form-label"></label>
+                    <input asp-for="Location" class="form-control rounded-pill" />
+                    <span asp-validation-for="Location" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Price" class="form-label"></label>
+                    <input asp-for="Price" class="form-control rounded-pill" />
+                    <span asp-validation-for="Price" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="StartDate" class="form-label"></label>
+                    <input asp-for="StartDate" type="date" class="form-control rounded-pill" />
+                    <span asp-validation-for="StartDate" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="EndDate" class="form-label"></label>
+                    <input asp-for="EndDate" type="date" class="form-control rounded-pill" />
+                    <span asp-validation-for="EndDate" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="AcademicYearId" class="form-label"></label>
+                    <select asp-for="AcademicYearId" class="form-select rounded-pill" asp-items="@Model.AcademicYearsList">
+                        <option value="">-- اختر السنة الأكاديمية --</option>
+                    </select>
+                    <span asp-validation-for="AcademicYearId" class="text-danger small"></span>
+                </div>
+
+
+                 <div class="mb-3"> 
+                     <label asp-for="SubjectId" class="form-label"></label> 
+                     <select asp-for="SubjectId" id="subjectSelect" class="form-select rounded-pill" asp-items="@Model.SubjectsList"> 
+                         <option value="">-- اختر المادة --</option> 
+                     </select> 
+                     <span asp-validation-for="SubjectId" class="text-danger small"></span> 
+                 </div> 
+
+                 <div class="mb-3"> 
+                     <label asp-for="TeacherId" class="form-label"></label> 
+                     <select asp-for="TeacherId" id="teacherSelect" class="form-select rounded-pill"> 
+                         <option value="">-- اختر المدرس --</option> 
+                     </select> 
+                     <span asp-validation-for="TeacherId" class="text-danger small"></span> 
+                 </div> 
+
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <button type="submit" class="btn btn-outline-success px-4 rounded-pill shadow-sm">
+                        <i class="bi bi-check-circle me-2"></i> Create
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill">
+                        <i class="bi bi-arrow-left-circle me-1"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            function loadTeachers(subjectId, selectedTeacherId) {
+                var teacherSelect = $('#teacherSelect');
+                teacherSelect.empty();
+                teacherSelect.append($('<option>', { value: '', text: '-- اختر المدرس --' }));
+
+                if (subjectId) {
+                    $.ajax({
+                        url: '@Url.Action("GetTeachersBySubject")',
+                        data: { subjectId: subjectId },
+                        success: function (data) {
+                            $.each(data, function (i, teacher) {
+                                teacherSelect.append($('<option>', {
+                                    value: teacher.teacherId,
+                                    text: teacher.fullName,
+                                    selected: teacher.teacherId == selectedTeacherId
+                                }));
+                            });
+                        }
+                    });
+                }
+            }
+
+            var initialSubjectId = $('#subjectSelect').val();
+            var initialTeacherId = '@Model.TeacherId';
+
+            loadTeachers(initialSubjectId, initialTeacherId);
+
+            $('#subjectSelect').change(function () {
+                var subjectId = $(this).val();
+                loadTeachers(subjectId, null);
+            });
+        });
+    </script>
+}
+
+<style>
+    .chart-header {
+        background: linear-gradient(to bottom, #1d3557, #447a9c);
+        color: white;
+        padding: 12px 20px;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .form-container {
+        background-color: #ffffff;
+    }
+
+    .form-control,
+    .form-select {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .row {
+        display: flex;
+        justify-content: center; /* لتوسيط المحتوى أفقياً */
+    }
+</style>

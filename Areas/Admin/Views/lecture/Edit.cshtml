@@ -1,0 +1,102 @@
+﻿@model IdentityText.Models.ViewModel.LectureVM
+
+@{
+    ViewData["Title"] = "Edit Lecture";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+       
+        <div class="chart-header mb-4 rounded-3 shadow-sm d-flex justify-content-center align-items-center">
+            <i class="bi bi-pencil-square me-2"></i> Edit Lecture
+        </div>
+
+        <div class="form-container p-4 rounded-3 shadow-sm bg-white">
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <input type="hidden" asp-for="LectureId" />
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control rounded-pill" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label"></label>
+                    <input asp-for="Description" class="form-control rounded-pill" />
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="LectureDate" class="form-label"></label>
+                    <input asp-for="LectureDate" type="datetime-local" class="form-control rounded-pill" />
+                    <span asp-validation-for="LectureDate" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="VideoURL" class="form-label"></label>
+                    <input asp-for="VideoURL" class="form-control rounded-pill" />
+                    <span asp-validation-for="VideoURL" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="CreatedAt" class="form-label"></label>
+                    <input asp-for="CreatedAt" type="datetime-local" class="form-control rounded-pill" />
+                    <span asp-validation-for="CreatedAt" class="text-danger small"></span>
+                </div>
+
+                @* <div class="mb-3"> *@
+                @*     <label asp-for="AssessmentId" class="form-label"></label> *@
+                @*     <select asp-for="AssessmentId" class="form-select rounded-pill" asp-items="@Model.AssessmentList"></select> *@
+                @*     <span asp-validation-for="AssessmentId" class="text-danger small"></span> *@
+                @* </div> *@
+
+                <div class="mb-3">
+                    <label asp-for="ClassGroupId" class="form-label"></label>
+                    <select asp-for="ClassGroupId" class="form-select rounded-pill" asp-items="@Model.ClassGroupList"></select>
+                    <span asp-validation-for="ClassGroupId" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex justify-content-center mt-4">
+                    <button type="submit" class="btn btn-outline-primary px-4 rounded-pill shadow-sm">
+                        <i class="bi bi-check-circle me-2"></i> Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<style>
+    .chart-header {
+        background: linear-gradient(to bottom, #1d3557, #447a9c);
+        color: white;
+        padding: 12px 20px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        border-radius: 12px;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: black;
+    }
+
+    .form-container {
+        background-color: #ffffff;
+    }
+
+    .form-control,
+    .form-select {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+</style>

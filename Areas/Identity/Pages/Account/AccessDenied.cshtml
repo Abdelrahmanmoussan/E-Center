@@ -1,0 +1,69 @@
+﻿@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "Access Denied";
+}
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(to right, #1d3557, #447a9c);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: white;
+    }
+
+    .access-container {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+
+        .access-container h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ffd166; 
+        }
+
+        .access-container p {
+            font-size: 1.25rem;
+            margin-top: 10px;
+        }
+
+    .btn-back {
+        margin-top: 30px;
+        padding: 10px 30px;
+        font-size: 1rem;
+        border: 2px solid #ffd166;
+        color: #ffd166;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+        .btn-back:hover {
+            background-color: #ffd166;
+            color: #1d3557;
+        }
+
+    .icon-lock {
+        font-size: 3.5rem;
+        color: #ffd166;
+        margin-bottom: 15px;
+    }
+</style>
+
+<div class="access-container">
+    <div class="icon-lock">
+        <i class="bi bi-shield-lock-fill"></i>
+    </div>
+    <h1>Access Denied</h1>
+    <p>You do not have permission to access this resource.</p>
+    <a href="javascript:history.back()" class="btn-back">
+        <i class="bi bi-arrow-left-circle me-2"></i> Back
+    </a>
+</div>

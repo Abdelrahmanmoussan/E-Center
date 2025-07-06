@@ -1,0 +1,87 @@
+﻿@using Azure.Core
+@model IdentityText.Models.ViewModel.AssessmentSolutionsVM
+
+<!-- العنوان -->
+<div class="chart-header mb-4 rounded-3 shadow-sm d-flex justify-content-center align-items-center text-light">
+    <i class="bi bi-card-checklist me-2"></i> Solutions for: @Model.AssessmentTitle
+</div>
+
+<div class="table-wrapper rounded-3 overflow-hidden shadow-sm">
+    <table class="table table-bordered table-hover align-middle mb-0 text-center">
+        <thead>
+            <tr class="gradient-header">
+                <th>Student</th>
+                <th>Solution</th>
+                <th>Score</th>
+                <th>Grade</th>
+                <th>Feedback</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model.StudentSolutions)
+            {
+                <tr>
+                    <td>@s.StudentName</td>
+                    <td>
+                        <a href="~/AssessmentFile/@s.SolutionLink" target="_blank" class="btn btn-info btn-sm rounded-pill">View</a>
+                    </td>
+                    <td>@s.Score</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(s.Grade))
+                        {
+                            var grade = s.Grade;
+                            var badgeClass = grade switch
+                            {
+                                "A" => "badge bg-success",
+                                "B" => "badge bg-primary",
+                                "C" => "badge bg-warning text-dark",
+                                _ => "badge bg-danger"
+                            };
+                            <span class="@badgeClass px-3 py-1">@grade</span>
+                        }
+                    </td>
+                    <td>@s.Feedback</td>
+                    <td>
+                        <a asp-area="Admin" asp-controller="Assessment" asp-action="Evaluate" asp-route-id="@s.AssessmentResultId" class="btn btn-outline-success btn-sm rounded-pill shadow-sm">
+                            <i class="bi bi-pencil-square me-1"></i>Evaluate
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .chart-header {
+        background: linear-gradient(to bottom, #1d3557, #447a9c);
+        padding: 12px 20px;
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+
+    .gradient-header th {
+        background: linear-gradient(to bottom, #1d3557, #447a9c);
+        color: white;
+        text-align: center;
+        vertical-align: middle;
+        height: 60px;
+        font-weight: bold;
+    }
+
+    .table-wrapper {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #dee2e6;
+        margin-bottom: 2rem;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    .btn-sm i {
+        margin-right: 4px;
+    }
+</style>

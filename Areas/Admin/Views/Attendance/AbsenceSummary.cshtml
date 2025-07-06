@@ -1,0 +1,113 @@
+﻿@model List<IdentityText.Models.ViewModel.StudentAttendanceReportVM>
+@{
+    ViewData["Title"] = "ملخص الغياب";
+    var classGroups = ViewBag.ClassGroups as List<IdentityText.Models.ClassGroup>;
+}
+
+<div class="container py-4">
+    <!-- العنوان -->
+    <div class="chart-header mb-4 rounded-3 shadow-sm d-flex justify-content-center align-items-center text-warning">
+        <i class="bi bi-calendar-x-fill me-2"></i> Summary of Absences
+    </div>
+
+    <!-- فورم الفلترة -->
+    <form method="get" asp-action="AbsenceSummary" class="row mb-4 g-3">
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Choose Class Group:</label>
+            <select name="classGroupId" class="form-select rounded-pill">
+                <option value="">-- Select class group --</option>
+                @if (classGroups == null || !classGroups.Any())
+                {
+                    <option disabled>No class groups available</option>
+                }
+                else
+                {
+                    foreach (var group in classGroups)
+                    {
+                        <option value="@group.ClassGroupId">@group.Title</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-6 d-flex align-items-end">
+            <button type="submit" class="btn btn-outline-primary w-100 rounded-pill shadow-sm">
+                <i class="bi bi-eye-fill me-1"></i> Show Report
+            </button>
+        </div>
+    </form>
+
+    <!-- الرسالة في حالة عدم وجود بيانات -->
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning text-center">No absence data available for this group.</div>
+    }
+    else
+    {
+        <!-- الجدول -->
+        <div class="table-wrapper rounded-3 overflow-hidden shadow-sm">
+            <table class="table table-bordered table-hover align-middle text-center mb-0">
+                <thead class="gradient-header">
+                    <tr>
+                        <th>Student</th>
+                        <th>Absence Count</th>
+                        <th>Notify Parent</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var s in Model)
+                    {
+                        <tr>
+                            <td>@s.Student.ApplicationUser.FirstName @s.Student.ApplicationUser.LastName</td>
+                            <td><span class="badge bg-danger fs-6 px-3">@s.AbsenceCount</span></td>
+                            <td>
+                                <form asp-action="NotifyParent" method="post" class="d-inline">
+                                    <input type="hidden" name="studentId" value="@s.Student.StudentId" />
+                                    <input type="hidden" name="classGroupId" value="@ViewBag.SelectedClassGroupId" />
+                                    <button type="submit" class="btn btn-warning btn-sm rounded-pill shadow-sm">
+                                        <i class="bi bi-envelope-exclamation me-1"></i> Notify
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<!-- التنسيقات -->
+<style>
+    .chart-header {
+        background: linear-gradient(to right, #1d3557, #447a9c);
+        padding: 12px 20px;
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+
+    .gradient-header th {
+        background: linear-gradient(to right, #1d3557, #447a9c);
+        color: gold;
+        font-weight: bold;
+        height: 60px;
+        vertical-align: middle;
+    }
+
+    .table-wrapper {
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .form-label {
+        font-weight: 600;
+    }
+
+    .form-select {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .btn-sm i {
+        margin-right: 4px;
+    }
+</style>
