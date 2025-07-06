@@ -1,43 +1,61 @@
 # Education Center Management System
 
-A desktop application (C# / .NET) designed to help education centers manage entities like students, courses, enrollments, instructors, and payments efficiently.
+A desktop application built with C# and .NET, designed to help education centers manage students, courses, instructors, enrollments, and payments efficiently.
 
 ---
 
 ## Features
 
-- **Student Management**
-  - Add, update, delete, search student records
-  - Store personal details and enrollment history
+- **Student Management**  
+  Add, update, delete, and search student records. Maintain student profiles and track enrollment history.
 
-- **Course Management**
-  - Create, edit, and remove courses
-  - Manage descriptions, schedules, and fees
+- **Course Management**  
+  Create and manage courses, including schedules, descriptions, and fees.
 
-- **Instructor Management**
-  - Add and manage instructor profiles
-  - Assign instructors to courses
+- **Instructor Management**  
+  Add instructor profiles and assign them to specific courses.
 
-- **Enrollment Management**
-  - Enroll students into courses
-  - Track enrollment dates and statuses
+- **Enrollment Management**  
+  Enroll students in courses, manage enrollment status, and view course participation.
 
-- **Payment Handling**
-  - Record course payments per student
-  - Monitor outstanding balances and payment history
+- **Payment Tracking**  
+  Record course payments, monitor payment history, and view outstanding balances.
 
-- **Reporting**
-  - View student rosters per course
-  - Track financial reports (completed vs. pending payments)
+- **Reports**  
+  Display students per course and generate simple financial reports.
 
-- **User Interface**
-  - Clean and intuitive Windows Forms (WinForms) interface
-  - Data presentation using DataGridViews
-  - Forms with input validation and search/filter functionality
+- **User Interface**  
+  Built with Windows Forms (WinForms) using clean and intuitive DataGridViews. Forms include input validation and search features.
 
-- **Data Persistence**
-  - Backend supported by SQL Server (or compatible database)
-  - Clean architecture separating Data Access, Business Logic, and Presentation
+- **Database Integration**  
+  SQL Server backend. Structured architecture separating data access, models, and UI layers.
+
+---
+
+## Requirements
+
+- Windows OS  
+- Visual Studio 2019 or newer  
+- SQL Server  
+- Appropriate .NET Framework (as used in the project)
+
+---
+
+## Installation & Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Abdelrahmanmoussan/E-Center.git
+   cd E-Center
+   ```
+
+2. Open the solution file `EducationCenter.sln` in Visual Studio.
+
+3. Update the database connection string in `App.config` to match your local SQL Server instance.
+
+4. Run any provided SQL scripts (if available) to create necessary tables.
+
+5. Build and run the solution.
 
 ---
 
@@ -45,95 +63,38 @@ A desktop application (C# / .NET) designed to help education centers manage enti
 
 ```
 EducationCenter.sln
-├── .gitattributes
-├── .gitignore
 ├── EducationCenter.DataAccess/
-│   └── DAOs, Repository classes, DB models
+│   └── Database operations and repository classes
 ├── EducationCenter.Models/
 │   └── Entity classes: Student, Course, Instructor, Enrollment, Payment
-└── EducationCenter/ (WinForms)
-    ├── Forms for managing each entity
+└── EducationCenter/ (WinForms UI)
+    ├── Forms for each management module
     └── Program entry point
 ```
 
 ---
 
-## Prerequisites
+## Usage
 
-- Windows OS
-- .NET Framework (version used in the project)
-- SQL Server or compatible RDBMS
-- Visual Studio (2019 or later) for development
-
----
-
-## Installation & Setup
-
-1. **Clone** the project:
-   ```bash
-   git clone https://github.com/Abdelrahmanmoussan/E-Center.git
-   cd E-Center
-   ```
-
-2. **Open** the `.sln` solution in Visual Studio.
-
-3. **Configure** the database connection:
-   - Locate `App.config` or settings file in the DataAccess project.
-   - Update the connection string with your server/database credentials.
-
-4. **Initialize** the database:
-   - Use SQL scripts provided (if any) or set up tables manually.
-   - Ensure relationships between entities are respected.
-
-5. **Build & Run**:
-   - Build the solution.
-   - Run the application using the `EducationCenter` (WinForms) project.
+- Use the main menu to navigate between Students, Courses, Instructors, Enrollments, and Payments.
+- Add or modify records through dedicated forms.
+- View reports for enrolled students and financial summaries.
 
 ---
 
-## Usage Guide
+## Contribution
 
-- Use the menu or tabs to access features.
-- Add or edit data via respective forms.
-- Use filters and searches for quick access.
-- Check reports for financial summaries or enrollments.
+Feel free to contribute:
 
----
-
-## Architecture & Key Components
-
-- **Separation of Concerns**: 
-  - `DataAccess`: Database interaction (ADO.NET or raw SQL).
-  - `Models`: POCO classes for Students, Courses, etc.
-  - `EducationCenter`: WinForms UI.
-
-- **Validation & Error Handling**:
-  - Input validation on UI fields.
-  - Try-catch blocks for DB transactions.
-
-- **Scalability**:
-  - Can be extended with modules like attendance tracking, teacher payroll, or online student portal.
-
----
-
-## Contributing
-
-Contributions are welcome!
-
-1. Fork the repository.
-2. Create a new branch (`feature/your-feature-name`).
-3. Commit and push changes.
-4. Open a Pull Request with a description.
-
----
-
-## License
-
-Currently unlicensed. For reuse, modifications, or distribution, please consult the author.
+1. Fork the repository  
+2. Create a feature branch (`feature/your-feature`)  
+3. Commit your changes  
+4. Push to your fork  
+5. Submit a Pull Request
 
 ---
 
 ## Contact
 
-**Author:** Abdelrahman Moussan  
-**GitHub:** [https://github.com/Abdelrahmanmoussan/E-Center](https://github.com/Abdelrahmanmoussan/E-Center)
+**Author**: Abdelrahman Moussan  
+**GitHub**: [https://github.com/Abdelrahmanmoussan/E-Center](https://github.com/Abdelrahmanmoussan/E-Center)
